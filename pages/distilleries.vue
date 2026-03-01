@@ -1,18 +1,31 @@
 <script setup>
-const { find } = useStrapi()
+defineOptions({
+  name: "Distilleries",
+});
 
-const { data: distilleries } = await useAsyncData('all-distilleries', () =>
-  find('distilleries', { populate: '*' })
-)
+const { $contentful } = useNuxtApp();
+
+const distilleries = ref([]);
+
+await onMounted(async () => {
+  const response = await $contentful.getEntries({
+    content_type: "distilleries",
+    order: "-sys.createdAt",
+  });
+  distilleries.value = response.items;
+});
 </script>
 
 <template>
-  <div class="grid md:grid-cols-3 gap-12">
-    <div v-for="distillery in distilleries.data" :key="distillery.id" class="bg-charcoal p-6 rounded-lg">
-      <!-- <img v-if="dist.attributes.logo?.data" :src="dist.attributes.logo.data.attributes.url" class="mb-4"/> -->
-      <h3 class="text-2xl text-gold mb-2">{{ distillery.name }}</h3>
-      <p class="text-cream/80">{{ distillery.notes }}</p>
-      <!-- <NuxtLink :to="`/distilleries/${dist.attributes.slug}`" class="btn-gold mt-4 inline-block">Learn More</NuxtLink> -->
+  <div class="container mx-auto px-4 py-4">
+    <h1 class="text-3xl font-bold mb-6">Distilleries</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <DistilleriesCard
+        v-for="distillery in distilleries"
+        :key="distillery.sys.id"
+        :distillery="distillery.fields"
+      />
     </div>
   </div>
 </template>

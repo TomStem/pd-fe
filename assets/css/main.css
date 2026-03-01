@@ -1,0 +1,17 @@
+body {
+  @apply bg-charcoal font-body;
+}
+
+h1,
+h2,
+h3 {
+  @apply font-serif text-gold tracking-wide;
+}
+
+.btn-gold {
+  @apply border border-gold text-gold px-6 py-3 uppercase tracking-widest hover:bg-gold hover:text-charcoal transition;
+}
+
+.bg-grain {
+  filter: url(#noiseFilter);
+}

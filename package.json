@@ -1,0 +1,27 @@
+{
+  "name": "whisky-club-frontend",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@apollo/client": "^4.1.6",
+    "@nuxtjs/strapi": "^2.1.1",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "axios": "^1.13.5",
+    "contentful": "^11.10.5",
+    "graphql": "^16.13.0",
+    "nuxt": "^4.3.1",
+    "vue": "^3.5.28",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0"
+  }
+}

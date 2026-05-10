@@ -1,11 +1,11 @@
-body {
-  @apply bg-charcoal font-body;
-}
-
 h1,
 h2,
 h3 {
-  @apply font-serif text-gold tracking-wide;
+  font-family: 'Futura PT Medium"';
+}
+
+body {
+  font-family: 'Futura PT Medium"';
 }
 
 .btn-gold {
@@ -14,4 +14,13 @@ h3 {
 
 .bg-grain {
   filter: url(#noiseFilter);
+}
+
+@font-face {
+  font-family: "Futura PT Medium";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Futura PT Medium"),
+    url("FuturaCyrillicMedium.woff") format("woff");
 }

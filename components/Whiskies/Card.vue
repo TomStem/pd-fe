@@ -12,85 +12,125 @@ defineProps({
 </script>
 
 <template>
-  <NuxtLink :to="`/whisky/${whisky.slug}`">
+  <NuxtLink :to="`/whisky/${whisky.slug}`" class="group block">
     <div
-      class="bg-stone-950 rounded-xl overflow-hidden shadow-lg border border-stone-800"
+      class="relative bg-stone-950 rounded-3xl shadow-sm overflow-hidden border border-stone-800 transition-all duration-500 group-hover:border-amber-900/50 group-hover:shadow-[0_0_30px_rgba(120,53,15,0.2)]"
     >
-      <div class="relative h-52 bg-stone-900 overflow-hidden">
+      <!-- Suble Grain Overlay for Texture -->
+      <div
+        class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"
+      ></div>
+
+      <!-- Image Section -->
+      <div
+        class="relative h-64 bg-[#0a0a0a] flex items-center justify-center overflow-hidden"
+      >
         <img
           :src="whisky.image.fields.file.url"
           :alt="whisky.title"
-          class="absolute inset-0 h-full w-full object-contain transform hover:scale-105 transition-transform duration-500 p-4"
+          class="h-full w-auto object-contain z-10 transform group-hover:scale-110 transition-transform duration-700 ease-out p-6"
         />
+
+        <!-- Ambient Glow behind bottle -->
         <div
-          class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-stone-950 to-transparent h-16"
+          class="absolute inset-0 bg-radial-gradient from-amber-900/20 to-transparent opacity-50"
+        ></div>
+
+        <!-- Bottle "Reflection" Shadow -->
+        <div
+          class="absolute bottom-4 w-1/2 h-4 bg-black/60 blur-xl rounded-full"
         ></div>
       </div>
 
-      <div class="p-3 space-y-2">
-        <div class="flex justify-between items-start">
-          <h2 class="text-lg font-serif font-bold text-stone-100">
+      <!-- Content Section -->
+      <div class="p-5 relative z-20">
+        <!-- Header: Name & Origin -->
+        <div class="mb-4">
+          <p
+            class="text-[10px] tracking-[0.2em] uppercase text-white font-bold mb-1"
+          >
+            {{ whisky.distillery?.fields.name || "Single Malt Scotch" }}
+          </p>
+          <h2
+            class="text-xl font-serif text-white leading-tight group-hover:text-amber-200 transition-colors"
+          >
             {{ whisky.name }}
           </h2>
-          <div
-            class="bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full"
-          >
-            <span class="text-gold text-xs font-semibold"
-              >{{ whisky.age }} Years</span
+        </div>
+
+        <!-- Specs Bar -->
+        <div
+          class="flex items-center gap-4 py-3 border-y border-stone-800/50 mb-4"
+        >
+          <div class="flex flex-col">
+            <span
+              class="text-[9px] uppercase tracking-widest text-white font-bold"
+              >Age</span
+            >
+            <span class="text-amber-500 font-serif italic text-sm"
+              >{{ whisky.age }}
+              <small class="text-[10px] uppercase not-italic">yrs</small></span
+            >
+          </div>
+          <div class="w-[1px] h-8 bg-stone-800"></div>
+          <div class="flex flex-col">
+            <span
+              class="text-[9px] uppercase tracking-widest text-white font-bold"
+              >Strength</span
+            >
+            <span class="text-white font-serif text-sm"
+              >{{ whisky.alcoholPercentage }}%
+              <small class="text-[10px] uppercase">abv</small></span
             >
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 py-2 border-y border-stone-800">
-          <div>
-            <p class="text-stone-500 text-[10px] uppercase">Strength</p>
-            <p class="text-stone-200 font-medium text-sm">
-              {{ whisky.alcoholPercentage }}%
-            </p>
-          </div>
-          <div>
-            <p class="text-stone-500 text-[10px] uppercase mb-1">Cask Type</p>
+        <!-- Cask Type (Minimalist Tags) -->
+        <div class="mb-4">
+          <div class="flex flex-wrap gap-1.5">
             <span
               v-for="(cask, caskDx) in whisky.cask"
               :key="caskDx"
-              class="px-1 py-0.5 bg-stone-900 text-stone-300 text-[10px] rounded border border-stone-700"
+              class="text-[10px] text-white border border-stone-800 px-2 py-0.5 rounded-sm bg-stone-900/50"
             >
               {{ cask }}
             </span>
           </div>
         </div>
 
-        <div>
-          <p class="text-stone-500 text-[10px] uppercase mb-1">Tasting Notes</p>
-          <div class="flex flex-wrap gap-1">
-            <span
-              class="px-1 py-0.5 bg-stone-900 text-stone-300 text-[10px] rounded border border-stone-700"
-              >Dark Chocolate</span
+        <!-- Tasting Notes: Decorative Style -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <div class="h-[1px] flex-1 bg-stone-800"></div>
+            <span class="text-[9px] uppercase tracking-[0.3em] text-white"
+              >Palate</span
             >
-            <span
-              class="px-1 py-0.5 bg-stone-900 text-stone-300 text-[10px] rounded border border-stone-700"
-              >Dried Figs</span
-            >
-            <span
-              class="px-1 py-0.5 bg-stone-900 text-stone-300 text-[10px] rounded border border-stone-700"
-              >Peat Smoke</span
-            >
-            <span
-              class="px-1 py-0.5 bg-stone-900 text-stone-300 text-[10px] rounded border border-stone-700"
-              >Sea Salt</span
-            >
+            <div class="h-[1px] flex-1 bg-stone-800"></div>
           </div>
-        </div>
-
-        <div v-if="whisky.distillery" class="p-2 text-center">
-          <NuxtLink
-            :to="`/distillery/${whisky.distillery.fields.slug}`"
-            class="w-full bg-amber-600 hover:bg-amber-500 text-gold font-bold rounded-lg transition-colors duration-200"
-          >
-            View distillery
-          </NuxtLink>
+          <p class="text-xs text-white italic text-center leading-relaxed">
+            Dark Chocolate, Dried Figs, Peat Smoke, Sea Salt
+          </p>
         </div>
       </div>
+
+      <!-- Bottom Accent Line -->
+      <div
+        class="h-1 w-full bg-gradient-to-r from-transparent via-amber-700/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+      ></div>
     </div>
   </NuxtLink>
 </template>
+
+<style scoped>
+.font-serif {
+  font-family:
+    "Playfair Display", serif; /* Or any premium serif you have loaded */
+}
+.bg-radial-gradient {
+  background: radial-gradient(
+    circle,
+    var(--tw-gradient-from) 0%,
+    var(--tw-gradient-to) 70%
+  );
+}
+</style>

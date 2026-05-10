@@ -17,7 +17,7 @@ await onMounted(async () => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-4">
+  <div class="container mx-auto px-4 py-4 pt-28">
     <h1 class="text-3xl font-bold mb-6">Distilleries</h1>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

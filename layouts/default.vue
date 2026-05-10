@@ -17,7 +17,7 @@ watch(isMenuOpen, (val) => {
 </script>
 
 <template>
-  <div class="bg-white min-h-screen font-sans text-slate-800">
+  <div class="bg-[#fff9f4] min-h-screen font-sans text-slate-800">
     <header
       class="sticky top-0 z-50 bg-[#2D2520] bg-grain backdrop-blur-md p-4 shadow-sm"
     >

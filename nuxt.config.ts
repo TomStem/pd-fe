@@ -1,8 +1,8 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      contentfulSpace: process.env.CTF_SPACE_ID,
-      contentfulToken: process.env.CTF_CDA_ACCESS_TOKEN,
+      contentfulSpaceId: process.env.CTF_SPACE_ID,
+      contentfulAccessToken: process.env.CTF_CDA_ACCESS_TOKEN,
     },
   },
   modules: ["@nuxtjs/tailwindcss", "nuxt-maplibre"],

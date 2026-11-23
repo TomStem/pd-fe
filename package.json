@@ -1,28 +1,41 @@
 {
-  "name": "whisky-club-frontend",
-  "type": "module",
+  "name": "pour-decisions",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "build": "nuxt build",
+    "generate:static": "STATIC_EXPORT=true nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.6",
-    "@nuxtjs/strapi": "^2.1.1",
-    "@nuxtjs/tailwindcss": "^6.14.0",
-    "@tailwindcss/line-clamp": "^0.4.4",
-    "axios": "^1.13.5",
-    "contentful": "^11.10.5",
-    "graphql": "^16.13.0",
-    "nuxt": "^4.3.1",
-    "nuxt-maplibre": "^1.2.2",
-    "vue": "^3.5.28",
-    "vue-router": "^4.6.4"
+    "@contentful/rich-text-html-renderer": "^17.2.3",
+    "@contentful/rich-text-types": "^17.2.7",
+    "@nuxt/eslint": "^1.17.0",
+    "@nuxt/fonts": "^1.2.0",
+    "@nuxt/image": "^2.2.1",
+    "@nuxtjs/sitemap": "^9.2.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "contentful": "^11.12.10",
+    "maplibre-gl": "^6.19.0",
+    "nuxt": "^4.6.4",
+    "tailwindcss": "^4.3.5",
+    "vue": "^3.5.46",
+    "vue-router": "^4.6.5"
   },
   "devDependencies": {
-    "@types/node": "^25.3.0"
+    "@types/node": "^26.6.6",
+    "eslint": "^10.15.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.1",
+    "vue-tsc": "^3.3.14"
+  },
+  "engines": {
+    "node": ">=22.12"
   }
 }

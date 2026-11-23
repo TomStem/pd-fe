@@ -1,0 +1,75 @@
+[
+  {
+    "slug": "islay",
+    "name": "Islay",
+    "countrySlug": "schotland",
+    "summary": "Het eiland van turf, zeewind en medicinale rook.",
+    "intro": "Het eiland van turf, zeewind en medicinale rook. Een handvol distilleries op een eiland met meer vaten dan inwoners.\n\nDe turfrook in de gerst, de zilte lucht in de pakhuizen: Islay-whisky is herkenbaar en verdeelt elk gezelschap in fans en twijfelaars.",
+    "flavourProfile": ["turf", "rook", "zout", "jodium"],
+    "seoDescription": "Islay: turf, rook en zeewind. Ontdek de distilleries van het whiskyeiland."
+  },
+  {
+    "slug": "speyside",
+    "name": "Speyside",
+    "countrySlug": "schotland",
+    "summary": "De dichtste concentratie distilleries van Schotland: fruitig, honing, sherry.",
+    "intro": "In en rond de vallei van de rivier Spey staat bijna de helft van alle Schotse distilleries. De whisky is doorgaans zacht en fruitig, met veel honing en vaak invloed van sherryvaten.",
+    "flavourProfile": ["appel", "honing", "sherry", "noten"]
+  },
+  {
+    "slug": "highlands",
+    "name": "Highlands",
+    "countrySlug": "schotland",
+    "summary": "Een enorm gebied met uiteenlopende stijlen, van fris tot vol.",
+    "intro": "De Highlands beslaan het grootste deel van Schotland en laten zich moeilijk in één stijl vangen. Van lichte, grasachtige malts tot rijke, gekruide dranken.",
+    "flavourProfile": ["heide", "graan", "kruiden", "fruit"]
+  },
+  {
+    "slug": "campbeltown",
+    "name": "Campbeltown",
+    "countrySlug": "schotland",
+    "summary": "Ooit de whiskyhoofdstad van de wereld, nu een zeldzaam streekje met eigenzinnige malts.",
+    "intro": "Aan het eind van de negentiende eeuw telde Campbeltown tientallen distilleries. Nu zijn er nog maar een paar over, met een herkenbare, licht zilte en olieachtige stijl.",
+    "flavourProfile": ["zout", "olie", "fruit", "lichte rook"]
+  },
+  {
+    "slug": "noord-ierland",
+    "name": "Noord-Ierland",
+    "countrySlug": "ierland",
+    "summary": "De noordkust van het eiland met de oudste licentie voor distilleren.",
+    "intro": "Aan de kust van Antrim wordt al eeuwen gedistilleerd. De stijl is zacht en fruitig, vaak met veel vanille van bourbonvaten.",
+    "flavourProfile": ["vanille", "fruit", "honing", "zacht"]
+  },
+  {
+    "slug": "munster",
+    "name": "Munster",
+    "countrySlug": "ierland",
+    "summary": "Het zuiden van Ierland, thuis van de pot still-traditie.",
+    "intro": "In Munster, rond Cork, staat een van de grootste distilleercomplexen van Ierland. Hier worden zowel pot still- als single malt-whiskeys gemaakt.",
+    "flavourProfile": ["pot still", "kruiden", "fruit", "room"]
+  },
+  {
+    "slug": "honshu",
+    "name": "Honshu",
+    "countrySlug": "japan",
+    "summary": "Het hoofdeiland van Japan met zowel klassieke als jonge distilleries.",
+    "intro": "Op Honshu vind je zowel de oudste whiskydistillerie van Japan als de jonge crafters in de bergen. Het klimaat met warme zomers en koude winters laat de whisky snel en spannend rijpen.",
+    "flavourProfile": ["sandelhout", "fruit", "eik", "elegant"]
+  },
+  {
+    "slug": "hokkaido",
+    "name": "Hokkaido",
+    "countrySlug": "japan",
+    "summary": "Het koele noorden, met een bijna Schotse zeelucht.",
+    "intro": "Hokkaido is koud, rauw en omgeven door zee, en dat proef je terug: stevige, licht rokerige whisky met een zilte rand.",
+    "flavourProfile": ["rook", "zout", "fruit", "stevig"]
+  },
+  {
+    "slug": "kentucky",
+    "name": "Kentucky",
+    "countrySlug": "verenigde-staten",
+    "summary": "Het kloppend hart van de bourbon.",
+    "intro": "Het merendeel van alle bourbon komt uit Kentucky. Het kalkrijke water, de gematigde seizoenen en een lange traditie maken het een logische thuisbasis.",
+    "flavourProfile": ["karamel", "vanille", "mais", "eik"]
+  }
+]

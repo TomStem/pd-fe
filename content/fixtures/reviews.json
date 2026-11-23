@@ -1,0 +1,15 @@
+[
+  {
+    "id": "review-ardbeg-10",
+    "whiskySlug": "ardbeg-10",
+    "title": "Rook met een zoete kern",
+    "rating": 5,
+    "description": "Turf en citroen in balans. Een vaste waarde voor de clubavond."
+  },
+  {
+    "id": "review-lagavulin-16",
+    "whiskySlug": "lagavulin-16",
+    "title": "Rijk en rokerig",
+    "rating": 4
+  }
+]

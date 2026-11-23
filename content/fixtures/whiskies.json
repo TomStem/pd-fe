@@ -1,0 +1,175 @@
+[
+  {
+    "slug": "ardbeg-10",
+    "name": "Ardbeg 10",
+    "distillerySlug": "ardbeg",
+    "age": 10,
+    "isNas": false,
+    "abv": 46,
+    "casks": [
+      "Ex-bourbon"
+    ],
+    "notes": "Neus: Houtrook, teer en citroenschil, met een zoete ondertoon van vanille.\n\nSmaak: Direct rokerig, daarna espresso, zwarte peper en een zoete, fruitige kern.\n\nAfdronk: Lang en droog, met rook die lang blijft hangen."
+  },
+  {
+    "slug": "lagavulin-16",
+    "name": "Lagavulin 16",
+    "distillerySlug": "lagavulin",
+    "age": 16,
+    "isNas": false,
+    "abv": 43,
+    "casks": [
+      "Ex-bourbon",
+      "Sherry"
+    ],
+    "notes": "Neus: Diepe rook, gedroogde vijgen en een vleugje zeewier.\n\nSmaak: Vol en olieachtig: rookvlees, rozijnen en donkere chocolade.\n\nAfdronk: Lang, warm en zoet, met smeulende turf als laatste indruk."
+  },
+  {
+    "slug": "laphroaig-10",
+    "name": "Laphroaig 10",
+    "distillerySlug": "laphroaig",
+    "age": 10,
+    "isNas": false,
+    "abv": 40,
+    "casks": [
+      "Ex-bourbon"
+    ],
+    "notes": "Neus: Jodium, pleisters en rokerige zeelucht, met een vleugje vanille.\n\nSmaak: Medicinaal en zilt, met een zachte zoetheid van karamel.\n\nAfdronk: Droog en rokerig, met wat zout in de nasmaak."
+  },
+  {
+    "slug": "caol-ila-12",
+    "name": "Caol Ila 12",
+    "distillerySlug": "caol-ila",
+    "age": 12,
+    "isNas": false,
+    "abv": 43,
+    "casks": [
+      "Refill hogsheads"
+    ],
+    "notes": "Neus: Lichte rook, citroen en gebrande suiker.\n\nSmaak: Schoon en olieachtig, met rook, zout en een frisse zuurtje.\n\nAfdronk: Middellang, rokerig en droog."
+  },
+  {
+    "slug": "bunnahabhain-12",
+    "name": "Bunnahabhain 12",
+    "distillerySlug": "bunnahabhain",
+    "age": 12,
+    "isNas": false,
+    "abv": 46.3,
+    "casks": [
+      "Ex-bourbon",
+      "Sherry"
+    ],
+    "notes": "Neus: Gezouten noten, toffee en een vleugje zeelucht.\n\nSmaak: Zacht en rond, met walnoot, rozijnen en een beetje zout.\n\nAfdronk: Middellang en warm, met noten en droge eik."
+  },
+  {
+    "slug": "glenfiddich-12",
+    "name": "Glenfiddich 12",
+    "distillerySlug": "glenfiddich",
+    "age": 12,
+    "isNas": false,
+    "abv": 40,
+    "casks": [
+      "Ex-bourbon",
+      "Sherry"
+    ],
+    "notes": "Neus: Verse peer, een snufje vanille en lichte eik.\n\nSmaak: Zacht en fruitig, met groene appel en een vleugje honing.\n\nAfdronk: Kort tot middellang, fris en licht zoet."
+  },
+  {
+    "slug": "glenfarclas-15",
+    "name": "Glenfarclas 15",
+    "distillerySlug": "glenfarclas",
+    "age": 15,
+    "isNas": false,
+    "abv": 46,
+    "casks": [
+      "Sherry"
+    ],
+    "notes": "Neus: Rozijnen, noten en donkere stroop, met een vleugje kruidnagel.\n\nSmaak: Vol en rijk: gedroogd fruit, chocolade en gebrande amandel.\n\nAfdronk: Lang, warm en licht kruidig."
+  },
+  {
+    "slug": "macallan-12-sherry-oak",
+    "name": "The Macallan 12 Sherry Oak",
+    "distillerySlug": "the-macallan",
+    "age": 12,
+    "isNas": false,
+    "abv": 40,
+    "casks": [
+      "Sherry-eik"
+    ],
+    "notes": "Neus: Gember, sinaasappelschil en rozijnen.\n\nSmaak: Rond en zacht, met toffee, noten en zachte kruiden.\n\nAfdronk: Middellang, zoet en licht houtig."
+  },
+  {
+    "slug": "springbank-10",
+    "name": "Springbank 10",
+    "distillerySlug": "springbank",
+    "age": 10,
+    "isNas": false,
+    "abv": 46,
+    "casks": [
+      "Ex-bourbon",
+      "Sherry"
+    ],
+    "notes": "Neus: Zeezout, gedroogd fruit en een vleugje rook.\n\nSmaak: Olieachtig en complex: vanille, citrus en een lichte, zoute rook.\n\nAfdronk: Lang en droog, met zout en fruit."
+  },
+  {
+    "slug": "bushmills-10",
+    "name": "Bushmills 10",
+    "distillerySlug": "bushmills",
+    "age": 10,
+    "isNas": false,
+    "abv": 40,
+    "casks": [
+      "Ex-bourbon",
+      "Sherry"
+    ],
+    "notes": "Neus: Honing, vanille en verse appel.\n\nSmaak: Zacht en fruitig, met karamel en lichte toast.\n\nAfdronk: Kort tot middellang, zacht en zoet."
+  },
+  {
+    "slug": "redbreast-12",
+    "name": "Redbreast 12",
+    "distillerySlug": "midleton",
+    "age": 12,
+    "isNas": false,
+    "abv": 40,
+    "casks": [
+      "Ex-bourbon",
+      "Sherry"
+    ],
+    "notes": "Neus: Kruidig en fruitig, met sinaasappel en een beetje nootmuskaat.\n\nSmaak: Romig en rond, met kruiden, rozijnen en een vleugje peper.\n\nAfdronk: Lang en kruidig, met warme eik."
+  },
+  {
+    "slug": "yamazaki-12",
+    "name": "Yamazaki 12",
+    "distillerySlug": "yamazaki",
+    "age": 12,
+    "isNas": false,
+    "abv": 43,
+    "casks": [
+      "Meerdere soorten vaten"
+    ],
+    "notes": "Neus: Perzik, kokos en een vleugje sandelhout.\n\nSmaak: Zacht en fruitig, met aardbei, vanille en gekruide eik.\n\nAfdronk: Middellang, zacht en licht kruidig."
+  },
+  {
+    "slug": "chichibu-first-ten",
+    "name": "Chichibu The First Ten",
+    "distillerySlug": "chichibu",
+    "age": 10,
+    "isNas": false,
+    "abv": 50.5,
+    "casks": [
+      "Meerdere soorten vaten"
+    ],
+    "notes": "Neus: Rood fruit, honing en gebrande eik.\n\nSmaak: Krachtig en rond, met kersen, kruiden en een vleugje rook.\n\nAfdronk: Lang en warm, met droge kruiden."
+  },
+  {
+    "slug": "buffalo-trace-bourbon",
+    "name": "Buffalo Trace Kentucky Straight Bourbon",
+    "distillerySlug": "buffalo-trace",
+    "isNas": true,
+    "abv": 40,
+    "casks": [
+      "Nieuw gebrand Amerikaans eiken"
+    ],
+    "notes": "Neus: Vanille, mint en een vleugje karamel.\n\nSmaak: Zoet en zacht, met toffee, bruine suiker en een beetje kruiden.\n\nAfdronk: Middellang, droog en licht kruidig."
+  }
+]

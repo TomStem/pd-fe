@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "schotland",
+    "name": "Schotland",
+    "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "summary": "Single malt in alle denkbare smaken: van zeewind en turf tot honing en sherry.",
+    "intro": "Schotland is de thuishaven van de single malt. De regio's verschillen enorm: het ene eiland ruikt naar rook en zeewier, de volgende vallei naar appelcompote en sherryvaten.\n\nVoor clubleden is het het perfecte beginpunt: genoeg variatie om elke maand een andere avond te vullen, en genoeg distilleries om er jaren over te discussiëren.",
+    "seoDescription": "Alles over Schotse whisky: de regio's, de distilleries en de flessen die wij proeven."
+  },
+  {
+    "slug": "ierland",
+    "name": "Ierland",
+    "flag": "🇮🇪",
+    "summary": "Zacht, fruitig en vaak drie keer gedistilleerd. Pot still en single malt naast elkaar.",
+    "intro": "Ierse whiskey is de zachte tegenhanger van de Schotse. Vaak driedubbel gedistilleerd, met veel fruit, vanille en een romige textuur.\n\nWij rekenen het hele eiland mee: de distilleries in Noord-Ierland en in de Republiek hebben meer gemeen dan hun grens doet vermoeden."
+  },
+  {
+    "slug": "japan",
+    "name": "Japan",
+    "flag": "🇯🇵",
+    "summary": "Precieze, elegante whisky met veel aandacht voor blending en rijping.",
+    "intro": "Japanse whisky is geïnspireerd door de Schotse traditie, maar kent een eigen vingerafdruk: precisie, balans en een opvallend gebruik van lokale eik.\n\nVan de oude garde rond Osaka tot de jonge, experimentele distilleries in de bergen: Japan is nooit saai."
+  },
+  {
+    "slug": "verenigde-staten",
+    "name": "Verenigde Staten",
+    "flag": "🇺🇸",
+    "summary": "Bourbon en rye: zoet, krachtig en gerijpt op nieuwe, aangebrande eiken vaten.",
+    "intro": "Amerikaanse whiskey draait om maïs, roggen en nieuw eiken. Bourbon is vaak zoet en vol karamel en vanille, rye wat pittiger en kruidiger.\n\nKentucky is het hart van het verhaal, en een prima tegenwicht voor een avond vol turf."
+  }
+]

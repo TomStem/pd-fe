@@ -20,6 +20,15 @@ usePageSeo({
 <template>
   <div class="container-page py-8 lg:py-12">
     <Breadcrumbs :items="crumbs" />
+    <CoverImage
+      :src="region.image"
+      :alt="region.name"
+      :slugs="[region.slug, region.country.slug]"
+      height-class="aspect-[8/3]"
+      :image-width="1200"
+      :image-height="450"
+      class="mt-6 rounded-card"
+    />
     <h1 class="mt-6 text-4xl font-bold">
       {{ region.name }}
     </h1>

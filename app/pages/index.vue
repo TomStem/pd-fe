@@ -23,7 +23,7 @@ const nextPlaces = computed(() => next.value && placeTag(tastingPlaces(next.valu
           to="/tastings"
           class="btn btn-primary"
         >
-          View the schedule
+          View tastings
         </NuxtLink>
         <NuxtLink
           to="/trips"
@@ -64,15 +64,16 @@ const nextPlaces = computed(() => next.value && placeTag(tastingPlaces(next.valu
     </HeroSection>
 
     <SectionBlock
-      title="Upcoming tastings"
+      title="Tastings"
       to="/tastings"
+      link-label="All tastings"
     >
       <div
-        v-if="home.upcomingTastings.length"
+        v-if="home.tastings.length"
         class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         <TastingCard
-          v-for="tasting in home.upcomingTastings"
+          v-for="tasting in home.tastings"
           :key="tasting.slug"
           :tasting="tasting"
         />
@@ -81,7 +82,7 @@ const nextPlaces = computed(() => next.value && placeTag(tastingPlaces(next.valu
         v-else
         class="mt-4 text-smoke"
       >
-        No tasting planned yet.
+        No tastings yet.
       </p>
     </SectionBlock>
 

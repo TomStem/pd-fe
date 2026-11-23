@@ -83,7 +83,7 @@ export interface Review {
 export interface Tasting extends Seo {
   slug: string;
   title: string;
-  /** ISO 8601 with offset. Upcoming vs. archive is derived from this. */
+  /** ISO 8601 with offset. Upcoming vs. past is derived from this. */
   date: string;
   location?: string;
   /** Only shared after the tasting has taken place; stripped from upcoming tastings in the content layer. */

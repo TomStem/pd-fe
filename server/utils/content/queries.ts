@@ -3,7 +3,7 @@ import type {
   CountryDetail, CountryRef, CountryView, DistilleryDetail, DistilleryView, HomeData, RegionDetail, RegionRef,
   RegionView, TastingView, TripView, WhiskyDetail, WhiskyView,
 } from '#shared/types/views';
-import { isUpcoming, sortByStart } from '../../../shared/utils/events';
+import { isUpcoming } from '../../../shared/utils/events';
 
 const isDefined = <T>(value: T | undefined): value is T => value !== undefined;
 const collator = new Intl.Collator('en', { sensitivity: 'base' });
@@ -86,7 +86,7 @@ function createLookup(store: ContentStore, now: Date) {
     distilleries: trip.distillerySlugs.map(slug => distilleries.get(slug)).filter(isDefined).map(distilleryView).filter(isDefined),
   });
 
-  const tastings = () => sortByStart(store.tastings, t => t.date, now).map(tastingView);
+  const tastings = () => [...store.tastings].sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).map(tastingView);
   const trips = () => [...store.trips].sort((a, b) => b.startDate.localeCompare(a.startDate)).map(tripView);
 
   return { countries, regions, distilleries, whiskies, regionView, countryView, distilleryView, whiskyView, tastingView, tripView, tastings, trips };
@@ -94,16 +94,16 @@ function createLookup(store: ContentStore, now: Date) {
 
 export function getHome(store: ContentStore, now = new Date()): HomeData {
   const lookup = createLookup(store, now);
-  const upcomingTastings = lookup.tastings().filter(t => t.isUpcoming);
+  const tastings = lookup.tastings();
   const withContent = new Set([
     ...store.regions.map(r => r.countrySlug),
     ...store.distilleries.map(d => lookup.distilleryView(d)?.country.slug),
     ...store.whiskies.map(w => lookup.whiskyView(w)?.country?.slug),
-    ...lookup.tastings().flatMap(t => [...t.countries.map(c => c.slug), ...t.regions.map(r => r.country.slug)]),
+    ...tastings.flatMap(t => [...t.countries.map(c => c.slug), ...t.regions.map(r => r.country.slug)]),
   ]);
   return {
-    nextTasting: upcomingTastings[0],
-    upcomingTastings: upcomingTastings.slice(0, 3),
+    nextTasting: tastings.filter(t => t.isUpcoming).at(-1),
+    tastings: tastings.slice(0, 3),
     trips: lookup.trips().slice(0, 2),
     countries: byName(store.countries.filter(c => withContent.has(c.slug))).map(lookup.countryView),
   };

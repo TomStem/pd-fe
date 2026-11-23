@@ -46,7 +46,7 @@ useHead({
     <div>
       <Breadcrumbs :items="crumbs" />
       <p class="label-mono mt-6 text-sherry">
-        {{ tasting.isUpcoming ? 'Upcoming tasting' : 'Tasting from the archive' }}
+        {{ tasting.isUpcoming ? 'Upcoming tasting' : 'Past tasting' }}
       </p>
       <h1 class="mt-2 text-4xl font-bold">
         {{ tasting.title }}

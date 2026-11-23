@@ -5,7 +5,7 @@ import {
   getCountries, getCountryDetail, getDistilleryDetail, getHome, getRegionDetail, getTastings, getTrips, getWhiskyDetail,
 } from '../server/utils/content/queries';
 import { placeTag, tastingPlaces } from '../app/utils/places';
-import { isUpcoming, sortByStart } from '../shared/utils/events';
+import { isUpcoming } from '../shared/utils/events';
 
 const store = loadFixtureStore();
 const now = new Date('2026-11-23T12:00:00+01:00');
@@ -15,11 +15,6 @@ describe('events', () => {
     expect(isUpcoming('2026-12-12T20:00:00+01:00', now)).toBe(true);
     expect(isUpcoming('2026-11-07T20:00:00+01:00', now)).toBe(false);
   });
-
-  it('sorts upcoming soonest first, then past most recent first', () => {
-    const dates = ['2026-10-01', '2027-02-01', '2026-12-01', '2026-11-01'];
-    expect(sortByStart(dates, d => d, now)).toEqual(['2026-12-01', '2027-02-01', '2026-11-01', '2026-10-01']);
-  });
 });
 
 describe('queries', () => {
@@ -27,10 +22,15 @@ describe('queries', () => {
     const tastings = getTastings(store, now);
     expect(tastings.filter(t => t.isUpcoming)).toHaveLength(1);
     expect(tastings.filter(t => !t.isUpcoming)).toHaveLength(4);
-    expect(tastings[0]!.slug).toBe('islay-night-rook-en-zeewind');
   });
 
-  it('moves tastings to the archive when time passes', () => {
+  it('lists tastings newest first, the upcoming one before the past ones', () => {
+    expect(getTastings(store, now).map(t => t.slug)).toEqual([
+      'islay-night-rook-en-zeewind', 'turf-of-geen-turf', 'raad-de-dram', 'speyside-sherrybommen', 'japanse-finesse',
+    ]);
+  });
+
+  it('turns upcoming tastings into past ones when time passes', () => {
     const later = new Date('2027-03-01T00:00:00+01:00');
     expect(getTastings(store, later).every(t => !t.isUpcoming)).toBe(true);
     expect(getHome(store, later).nextTasting).toBeUndefined();
@@ -39,7 +39,7 @@ describe('queries', () => {
   it('picks the next tasting for the home page', () => {
     const home = getHome(store, now);
     expect(home.nextTasting?.slug).toBe('islay-night-rook-en-zeewind');
-    expect(home.upcomingTastings).toHaveLength(1);
+    expect(home.tastings.map(t => t.slug)).toEqual(['islay-night-rook-en-zeewind', 'turf-of-geen-turf', 'raad-de-dram']);
     expect(home.trips.map(t => t.slug)).toEqual(['japan-van-yamazaki-tot-yoichi', 'islay-pelgrimage']);
   });
 
@@ -98,11 +98,11 @@ describe('queries', () => {
       .toEqual(['islay-night-rook-en-zeewind', 'turf-of-geen-turf', 'speyside-sherrybommen']);
   });
 
-  it('shows no upcoming tasting when none is planned', () => {
+  it('has no next tasting when none is upcoming, but still lists the newest three', () => {
     const past: ContentStore = { ...store, tastings: store.tastings.filter(t => !isUpcoming(t.date, now)) };
     const home = getHome(past, now);
     expect(home.nextTasting).toBeUndefined();
-    expect(home.upcomingTastings).toEqual([]);
+    expect(home.tastings.map(t => t.slug)).toEqual(['turf-of-geen-turf', 'raad-de-dram', 'speyside-sherrybommen']);
   });
 
   it('finds all tastings that pour a whisky of a distillery', () => {

@@ -88,8 +88,10 @@ usePageSeo({
       :src="whisky.image"
       :alt="whisky.name"
       :slugs="[whisky.region?.slug, whisky.country?.slug]"
-      height-class="h-48"
-      class="mt-6 max-w-md rounded-card"
+      height-class="aspect-[8/3]"
+      :image-width="1200"
+      :image-height="450"
+      class="mt-6 rounded-card"
     />
 
     <section

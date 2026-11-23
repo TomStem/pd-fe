@@ -49,10 +49,10 @@ usePageSeo({
         v-if="distillery.image"
         :src="distillery.image"
         :alt="`Photo of ${distillery.name}`"
-        width="800"
-        height="600"
+        width="1200"
+        height="450"
         loading="lazy"
-        class="mt-8 rounded-card"
+        class="mt-8 aspect-[8/3] w-full rounded-card object-cover"
       />
 
       <section

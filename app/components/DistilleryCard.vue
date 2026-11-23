@@ -11,7 +11,9 @@ const facts = computed(() => [props.distillery.town, props.distillery.founded].f
       :src="distillery.image"
       :alt="distillery.name"
       :slugs="[distillery.region?.slug, distillery.country.slug]"
-      height-class="h-24"
+      height-class="aspect-[8/3]"
+      :image-width="1200"
+      :image-height="450"
     />
     <div class="flex flex-1 flex-col p-4">
       <p class="label-mono text-sherry">

@@ -12,10 +12,15 @@ export default defineNuxtConfig({
       ? {}
       : {
           '/': { swr: 600, prerender: false },
+          '/tastings': { swr: 600, prerender: false },
           '/tastings/**': { swr: 600, prerender: false },
+          '/trips': { swr: 600, prerender: false },
           '/trips/**': { swr: 600, prerender: false },
+          '/distilleries': { swr: 3600, prerender: false },
           '/distilleries/**': { swr: 3600, prerender: false },
+          '/whiskies': { swr: 3600, prerender: false },
           '/whiskies/**': { swr: 3600, prerender: false },
+          '/countries': { swr: 3600, prerender: false },
           '/countries/**': { swr: 3600, prerender: false },
         },
   },
@@ -59,7 +64,7 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: staticExport ? ['/', '/countries', '/about', '/contact'] : ['/countries', '/about', '/contact'],
+      routes: staticExport ? ['/', '/countries', '/about', '/contact'] : ['/about', '/contact'],
       crawlLinks: true,
       failOnError: true,
     },

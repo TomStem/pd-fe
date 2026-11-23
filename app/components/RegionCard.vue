@@ -8,10 +8,10 @@ defineProps<{ region: RegionView }>();
       :src="region.image"
       :alt="region.name"
       :slugs="[region.slug, region.country.slug]"
-      :tag="`${region.distilleryCount} ${region.distilleryCount === 1 ? 'distillery' : 'distilleries'}`"
       height-class="aspect-[8/3]"
       :image-width="1200"
       :image-height="450"
+      :tag="`${region.distilleryCount} ${region.distilleryCount === 1 ? 'distillery' : 'distilleries'}`"
     />
     <div class="flex flex-1 flex-col p-4">
       <h3 class="text-lg font-bold">

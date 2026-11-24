@@ -5,23 +5,6 @@ const staticExport = process.env.STATIC_EXPORT === 'true';
 
 export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@nuxt/fonts', '@nuxt/image', '@nuxtjs/sitemap'],
-  $production: {
-    routeRules: staticExport
-      ? {}
-      : {
-          '/': { swr: 600, prerender: false },
-          '/tastings': { swr: 600, prerender: false },
-          '/tastings/**': { swr: 600, prerender: false },
-          '/trips': { swr: 600, prerender: false },
-          '/trips/**': { swr: 600, prerender: false },
-          '/distilleries': { swr: 3600, prerender: false },
-          '/distilleries/**': { swr: 3600, prerender: false },
-          '/whiskies': { swr: 3600, prerender: false },
-          '/whiskies/**': { swr: 3600, prerender: false },
-          '/countries': { swr: 3600, prerender: false },
-          '/countries/**': { swr: 3600, prerender: false },
-        },
-  },
   devtools: { enabled: false },
 
   app: {
@@ -46,12 +29,12 @@ export default defineNuxtConfig({
     },
   },
 
-  // Static pages are prerendered; pages that depend on dates or change often use stale-while-revalidate in production only,
-  // so dev never serves a cached page from an earlier content state.
+  // Pages that show Contentful content are rendered on every request (no ISR/SWR) so published changes show up on the next
+  // refresh; the short in-memory content cache in server/utils/content.ts is the only delay. About and Contact are static.
   routeRules: {
-    '/countries': { prerender: true },
     '/about': { prerender: true },
     '/contact': { prerender: true },
+    '/api/**': { headers: { 'cache-control': 'no-store' } },
     '/proeverijen/**': { redirect: { to: '/tastings/**', statusCode: 301 } },
     '/reizen/**': { redirect: { to: '/trips/**', statusCode: 301 } },
     '/landen/**': { redirect: { to: '/countries/**', statusCode: 301 } },
@@ -65,7 +48,7 @@ export default defineNuxtConfig({
       routes: staticExport
         ? ['/', '/countries', '/about', '/contact']
         : ['/about', '/contact'],
-      crawlLinks: true,
+      crawlLinks: staticExport,
       failOnError: true,
     },
   },

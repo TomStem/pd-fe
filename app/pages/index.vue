@@ -23,9 +23,7 @@ const showTastings = computed(
         Whisky club
       </p>
       <h1 class="mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">
-        Pour decisions.<br /><em class="font-medium text-amber"
-          >Good whisky.</em
-        >
+        Pour decisions.<br><em class="font-medium text-amber">Good whisky.</em>
       </h1>
       <p class="mt-4 max-w-[46ch] text-ash">
         We taste, travel and argue about whisky. From Islay smoke to Japanese

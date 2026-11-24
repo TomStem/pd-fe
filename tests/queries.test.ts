@@ -44,6 +44,20 @@ describe('queries', () => {
     expect(home.trips.map(t => t.slug)).toEqual(['japan-van-yamazaki-tot-yoichi', 'islay-pelgrimage']);
   });
 
+  it('counts what exists for the home stats', () => {
+    expect(getHome(store, now).stats).toEqual({ tastings: 5, countries: 4, whiskies: 14, distilleries: 17, trips: 3 });
+  });
+
+  it('leaves out countries without content and entities that cannot be shown from the stats', () => {
+    const sparse: ContentStore = {
+      ...store,
+      countries: [...store.countries, { ...store.countries[0]!, slug: 'empty-land', name: 'Empty land' }],
+      whiskies: [...store.whiskies, { ...store.whiskies[0]!, slug: 'dangling', distillerySlug: 'nowhere' }],
+      trips: [],
+    };
+    expect(getHome(sparse, now).stats).toMatchObject({ countries: 4, whiskies: 14, trips: 0 });
+  });
+
   it('resolves whiskies, distillery and region of a past tasting', () => {
     const speyside = getTastings(store, now).find(t => t.slug === 'speyside-sherrybommen')!;
     expect(speyside.whiskies.map(w => w.name)).toContain('Glenfarclas 15');

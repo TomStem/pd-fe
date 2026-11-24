@@ -49,7 +49,16 @@ export interface TripView extends Trip {
   distilleries: DistilleryView[];
 }
 
+export interface HomeStats {
+  tastings: number;
+  countries: number;
+  whiskies: number;
+  distilleries: number;
+  trips: number;
+}
+
 export interface HomeData {
+  stats: HomeStats;
   nextTasting?: TastingView;
   latestTasting?: TastingView;
   tastings: TastingView[];

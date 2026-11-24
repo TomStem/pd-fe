@@ -65,6 +65,8 @@ const showTastings = computed(() => home.value.tastings.length > 0 || !next.valu
       </template>
     </HeroSection>
 
+    <StatTiles :stats="home.stats" />
+
     <SectionBlock
       v-if="showTastings"
       title="Tastings"

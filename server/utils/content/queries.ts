@@ -104,12 +104,20 @@ export function getHome(store: ContentStore, now = new Date()): HomeData {
   const nextTasting = tastings.filter(t => t.isUpcoming).at(-1);
   const latestTasting = tastings.find(t => !t.isUpcoming);
   const hero = nextTasting ?? latestTasting;
+  const countries = store.countries.filter(c => withContent.has(c.slug));
   return {
+    stats: {
+      tastings: tastings.length,
+      countries: countries.length,
+      whiskies: store.whiskies.filter(w => lookup.whiskyView(w)).length,
+      distilleries: store.distilleries.filter(d => lookup.distilleryView(d)).length,
+      trips: store.trips.length,
+    },
     nextTasting,
     latestTasting,
     tastings: tastings.filter(t => t.slug !== hero?.slug).slice(0, 3),
     trips: lookup.trips().slice(0, 2),
-    countries: byName(store.countries.filter(c => withContent.has(c.slug))).map(lookup.countryView),
+    countries: byName(countries).map(lookup.countryView),
   };
 }
 

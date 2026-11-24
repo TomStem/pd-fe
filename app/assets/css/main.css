@@ -156,6 +156,16 @@
   position: absolute;
 }
 
+.view-enter-active,
+.view-leave-active {
+  transition: opacity 0.2s ease-out;
+}
+
+.view-enter-from,
+.view-leave-to {
+  opacity: 0;
+}
+
 .chip-enter-active,
 .chip-leave-active {
   transition: opacity 0.2s ease-out, transform 0.2s ease-out;

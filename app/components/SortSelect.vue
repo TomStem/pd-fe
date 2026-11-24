@@ -4,7 +4,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: K] }>();
 </script>
 
 <template>
-  <label class="ml-auto flex items-center gap-2 text-sm text-smoke">
+  <label class="flex items-center gap-2 text-sm text-smoke">
     Sort by
     <select
       :value="modelValue"

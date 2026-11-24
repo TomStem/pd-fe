@@ -25,6 +25,7 @@ const filters = useFacetFilters(sorted, whiskyFilterGroups, whiskySearchText);
         #toolbar
       >
         <SortSelect
+          class="ml-auto"
           :model-value="sort"
           :options="whiskySorts"
           @update:model-value="setSort"

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { formatYear } from '../app/utils/format';
 import { facetGroups, filterItems, parseSelection, selectionToQuery } from '../app/utils/facetFilters';
-import { sortTastings, tastingFilterGroups, tastingSearchText, tastingSorts } from '../app/utils/tastingFilters';
+import { sortTastings, tastingFilterGroups, tastingSearchText, tastingSorts, tastingViews, timelineSections } from '../app/utils/tastingFilters';
 
 const country = (slug: string, name: string) => ({ slug, name });
 const region = (slug: string, countrySlug: string, countryName: string) => ({ slug, name: slug, country: country(countrySlug, countryName) });
@@ -120,5 +120,24 @@ describe('tasting region group', () => {
 
   it('takes counts within the other selections', () => {
     expect(optionsOf('region', { country: ['scotland'] })).toEqual([['islay', 1], ['kentucky', 0], ['speyside', 1]]);
+  });
+});
+
+describe('timeline sections', () => {
+  it('offers the grid first as the default view', () => {
+    expect(tastingViews.map(v => v.value)).toEqual(['grid', 'timeline']);
+  });
+
+  it('groups consecutive tastings under their year', () => {
+    expect(timelineSections(tastings).map(s => [s.year, s.tastings.map(t => t.slug)])).toEqual([['2025', ['a', 'b']], ['2024', ['c']], ['2023', ['d']]]);
+  });
+
+  it('starts a new section when the order interleaves years and handles an empty list', () => {
+    expect(timelineSections([tastings[0]!, tastings[2]!, tastings[1]!]).map(s => s.year)).toEqual(['2025', '2024', '2025']);
+    expect(timelineSections([])).toEqual([]);
+  });
+
+  it('uses the club timezone for the year', () => {
+    expect(timelineSections([tasting('x', '2024-12-31T23:30:00+00:00')])[0]!.year).toBe('2025');
   });
 });

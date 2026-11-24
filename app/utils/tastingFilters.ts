@@ -22,6 +22,11 @@ export const tastingSorts = [
   { value: 'title', label: 'Title A–Z' },
 ] as const;
 
+export const tastingViews = [
+  { value: 'grid', label: 'Grid' },
+  { value: 'timeline', label: 'Timeline' },
+] as const;
+
 export type TastingSort = (typeof tastingSorts)[number]['value'];
 
 const titleCollator = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
@@ -35,4 +40,20 @@ export function sortTastings(tastings: TastingView[], sort: TastingSort): Tastin
     title: (a, b) => titleCollator.compare(a.title, b.title),
   };
   return [...tastings].sort(compare[sort]);
+}
+
+export interface TimelineSection {
+  year: string;
+  tastings: TastingView[];
+}
+
+/** Groups tastings under their year in the order they come; a year appears again when the order interleaves years. */
+export function timelineSections(tastings: TastingView[]): TimelineSection[] {
+  return tastings.reduce<TimelineSection[]>((sections, tasting) => {
+    const year = formatYear(tasting.date);
+    const last = sections.at(-1);
+    if (last?.year === year) last.tastings.push(tasting);
+    else sections.push({ year, tastings: [tasting] });
+    return sections;
+  }, []);
 }

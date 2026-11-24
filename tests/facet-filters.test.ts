@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  byFixedOrder, byLabel, byValueDescending, facetGroups, facetValue, filterItems, normalizeText, parseSelection, searchItems, selectedTotal, selectionToQuery, texts, toggleValue,
+  activeChips, byFixedOrder, byLabel, byValueDescending, facetGroups, facetValue, filterItems, normalizeText, parseSelection, searchItems, selectedTotal, selectionToQuery, texts, toggleValue,
   type FilterGroup,
 } from '../app/utils/facetFilters';
 
@@ -139,5 +139,23 @@ describe('search', () => {
     const searched = searchItems(items, textOf, 'red');
     const group = facetGroups(items, groups, {}, searched).find(g => g.key === 'tag')!;
     expect(group.options.map(o => [o.label, o.count])).toEqual([['Bourbon', 0], ['Oak', 2], ['sherry', 1]]);
+  });
+});
+
+describe('active chips', () => {
+  const shown = facetGroups(items, groups);
+
+  it('lists the selected options per group followed by the search term', () => {
+    expect(activeChips(shown, { tag: ['sherry', 'oak'], colour: ['red'] }, 'peat')).toEqual([
+      { id: 'colour:red', key: 'colour', value: 'red', label: 'Colour: red', ariaLabel: 'Remove filter Colour red' },
+      { id: 'tag:sherry', key: 'tag', value: 'sherry', label: 'Tag: sherry', ariaLabel: 'Remove filter Tag sherry' },
+      { id: 'tag:oak', key: 'tag', value: 'oak', label: 'Tag: Oak', ariaLabel: 'Remove filter Tag Oak' },
+      { id: 'q', label: 'Search: peat', ariaLabel: 'Remove search peat' },
+    ]);
+  });
+
+  it('has no chips when nothing is active', () => {
+    expect(activeChips(shown, { colour: [], tag: [] }, '')).toEqual([]);
+    expect(activeChips(shown, {}, '')).toEqual([]);
   });
 });

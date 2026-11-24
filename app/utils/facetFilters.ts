@@ -94,6 +94,24 @@ export function parseSelection(query: Record<string, unknown>, groups: FacetGrou
 export const selectionToQuery = (selection: FilterSelection) =>
   Object.fromEntries(Object.entries(selection).filter(([, values]) => values.length).map(([key, values]) => [key, values.join(',')]));
 
+export interface FilterChip {
+  id: string;
+  label: string;
+  ariaLabel: string;
+  /** The group and value to toggle off; absent for the search term. */
+  key?: string;
+  value?: string;
+}
+
+/** The filters in use, in group order, followed by the search term. */
+export function activeChips(groups: FacetGroup[], selection: FilterSelection, searchTerm: string): FilterChip[] {
+  const chips = groups.flatMap(group => (selection[group.key] ?? []).map((value) => {
+    const label = group.options.find(option => option.value === value)?.label ?? value;
+    return { id: `${group.key}:${value}`, key: group.key, value, label: `${group.label}: ${label}`, ariaLabel: `Remove filter ${group.label} ${label}` };
+  }));
+  return searchTerm ? [...chips, { id: 'q', label: `Search: ${searchTerm}`, ariaLabel: `Remove search ${searchTerm}` }] : chips;
+}
+
 export const selectedTotal = (selection: FilterSelection) => Object.values(selection).reduce((sum, values) => sum + values.length, 0);
 
 export function toggleValue(selection: FilterSelection, key: string, value: string): FilterSelection {

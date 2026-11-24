@@ -156,6 +156,17 @@
   position: absolute;
 }
 
+.chip-enter-active,
+.chip-leave-active {
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.chip-enter-from,
+.chip-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
 .note-enter-active {
   transition: opacity 0.3s ease-out 0.3s;
 }
@@ -181,6 +192,16 @@
   .card-list-enter-active,
   .card-list-leave-active {
     transition: opacity 0.15s linear;
+  }
+
+  .chip-enter-active,
+  .chip-leave-active {
+    transition: opacity 0.15s linear;
+  }
+
+  .chip-enter-from,
+  .chip-leave-to {
+    transform: none;
   }
 
   .card-list-enter-active,

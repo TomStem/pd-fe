@@ -4,11 +4,13 @@ export interface FacetFilters {
   selection: FilterSelection;
   /** Filters and search term in use. */
   activeCount: number;
+  chips: FilterChip[];
   /** Whether searching is offered. */
   searchable: boolean;
   /** What is in the search box, which runs ahead of the URL while typing. */
   searchInput: string;
   toggle: (key: string, value: string) => void;
+  removeChip: (chip: FilterChip) => void;
   setSearch: (value: string) => void;
   clear: () => void;
 }
@@ -32,7 +34,8 @@ export function useFacetFilters<T>(items: MaybeRefOrGetter<T[]>, definitions: Fi
   const selection = computed(() => parseSelection(route.query, options.value));
   const groups = computed(() => facetGroups(toValue(items), definitions, selection.value, searched.value));
   const visible = computed(() => filterItems(searched.value, definitions, selection.value));
-  const activeCount = computed(() => selectedTotal(selection.value) + (searchTerm.value ? 1 : 0));
+  const chips = computed(() => activeChips(groups.value, selection.value, searchTerm.value));
+  const activeCount = computed(() => chips.value.length);
 
   function apply(next: FilterSelection, term: string) {
     const others = Object.fromEntries(Object.entries(route.query).filter(([key]) => key !== 'q' && !keys.includes(key)));
@@ -51,19 +54,25 @@ export function useFacetFilters<T>(items: MaybeRefOrGetter<T[]>, definitions: Fi
     if (term !== searchInput.value.trim()) searchInput.value = term;
   });
 
+  const toggle = (key: string, value: string) => apply(toggleValue(selection.value, key, value), searchTerm.value);
+
+  function clear() {
+    clearTimeout(pendingSearch);
+    searchInput.value = '';
+    return apply({}, '');
+  }
+
   return reactive({
     groups,
     selection,
     visible,
+    chips,
     activeCount,
     searchable: computed(() => toValue(items).length > 1 && searchText !== undefined),
     searchInput,
-    toggle: (key: string, value: string) => apply(toggleValue(selection.value, key, value), searchTerm.value),
+    toggle,
+    removeChip: (chip: FilterChip) => (chip.key ? toggle(chip.key, chip.value!) : clear()),
     setSearch,
-    clear: () => {
-      clearTimeout(pendingSearch);
-      searchInput.value = '';
-      return apply({}, '');
-    },
+    clear,
   });
 }

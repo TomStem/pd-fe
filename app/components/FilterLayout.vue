@@ -86,6 +86,13 @@ const hasPanel = computed(() => props.filters.groups.length > 0);
         </p>
         <slot name="toolbar" />
       </div>
+      <ActiveChips
+        v-if="filters.chips.length"
+        :chips="filters.chips"
+        class="mt-4"
+        @remove="filters.removeChip"
+        @clear="filters.clear"
+      />
       <slot :has-groups="hasPanel" />
     </div>
   </div>

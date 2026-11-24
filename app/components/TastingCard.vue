@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{ tasting: TastingView }>();
 
-const tag = computed(() => placeTag(tastingPlaces(props.tasting)));
+const tags = computed(() => [placeTag(tastingPlaces(props.tasting)), formatYear(props.tasting.date)]);
 </script>
 
 <template>
@@ -9,7 +9,7 @@ const tag = computed(() => placeTag(tastingPlaces(props.tasting)));
     <CoverImage
       :src="tasting.image"
       :alt="tasting.title"
-      :tag="tag"
+      :tags="tags"
       height-class="aspect-[8/3]"
       :image-width="1200"
       :image-height="450"

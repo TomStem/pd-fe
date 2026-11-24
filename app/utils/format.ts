@@ -4,11 +4,13 @@ const format = (options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(
 const dayMonth = format({ day: 'numeric', month: 'short' });
 const longDate = format({ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 const monthYear = format({ month: 'long', year: 'numeric' });
+const yearOnly = format({ year: 'numeric' });
 const time = format({ hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 
 export const formatDayMonth = (iso: string) => dayMonth.format(new Date(iso));
 export const formatLongDate = (iso: string) => longDate.format(new Date(iso));
 export const formatMonthYear = (iso: string) => monthYear.format(new Date(iso));
+export const formatYear = (iso: string) => yearOnly.format(new Date(iso));
 export const formatTime = (iso: string) => time.format(new Date(iso));
 export const formatAbv = (abv: number) => `${abv}%`;
 export const formatRating = (rating: number) => String(rating);

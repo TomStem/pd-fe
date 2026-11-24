@@ -1,13 +1,15 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   src?: string;
   alt?: string;
   slugs?: (string | undefined)[];
-  tag?: string;
+  tags?: (string | undefined)[];
   heightClass?: string;
   imageWidth?: number;
   imageHeight?: number;
-}>(), { alt: '', heightClass: 'h-32', src: undefined, slugs: () => [], tag: undefined, imageWidth: 800, imageHeight: 450 });
+}>(), { alt: '', heightClass: 'h-32', src: undefined, slugs: () => [], tags: () => [], imageWidth: 800, imageHeight: 450 });
+
+const visibleTags = computed(() => props.tags.filter(Boolean));
 </script>
 
 <template>
@@ -31,9 +33,15 @@ withDefaults(defineProps<{
     >
       <PlaceholderImage :slugs="slugs" />
     </slot>
-    <span
-      v-if="tag"
-      class="absolute bottom-2.5 left-3 rounded-full bg-black/65 px-2.5 py-1 text-xs text-white"
-    >{{ tag }}</span>
+    <div
+      v-if="visibleTags.length"
+      class="absolute inset-x-3 bottom-2.5 flex flex-wrap gap-1.5"
+    >
+      <span
+        v-for="tag in visibleTags"
+        :key="tag"
+        class="rounded-full bg-black/65 px-2.5 py-1 text-xs text-white"
+      >{{ tag }}</span>
+    </div>
   </div>
 </template>

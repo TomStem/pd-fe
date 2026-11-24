@@ -11,7 +11,7 @@ const tag = computed(() => [primaryRegion.value?.name, `${tripLength(props.trip.
       :src="trip.image"
       :alt="trip.title"
       :slugs="[primaryRegion?.slug, primaryRegion?.country.slug]"
-      :tag="tag"
+      :tags="[tag]"
       height-class="h-40"
     />
     <div class="flex flex-1 flex-col p-4">

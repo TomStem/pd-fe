@@ -94,6 +94,10 @@
     @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3.5 py-1.5 text-sm;
   }
 
+  .filter-pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1 text-sm transition-colors hover:border-sherry disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line aria-pressed:border-oak aria-pressed:bg-oak aria-pressed:text-white;
+  }
+
   .dram {
     @apply inline-flex rounded-md bg-amber/20 px-2.5 py-1 text-xs text-[#7a4a06];
   }
@@ -125,4 +129,67 @@
   .rich-text ol { @apply list-decimal pl-5; }
   .rich-text a { @apply text-sherry underline underline-offset-2; }
   .rich-text blockquote { @apply border-l-4 border-amber pl-4 italic; }
+}
+
+.card-list {
+  position: relative;
+  transition: min-height 0.3s ease-out;
+}
+
+.card-list-move,
+.card-list-enter-active,
+.card-list-leave-active {
+  transition: transform 0.35s ease-out, opacity 0.3s ease-out, box-shadow 0.2s;
+}
+
+.card-list-enter-active {
+  transition-delay: calc(var(--i, 0) * 30ms);
+}
+
+.card-list-enter-from,
+.card-list-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.card-list-leave-active {
+  position: absolute;
+}
+
+.note-enter-active {
+  transition: opacity 0.3s ease-out 0.3s;
+}
+
+.note-leave-active {
+  transition: opacity 0.15s ease-out;
+}
+
+.note-enter-from,
+.note-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-list {
+    transition: none;
+  }
+
+  .card-list-move {
+    transition: none;
+  }
+
+  .card-list-enter-active,
+  .card-list-leave-active {
+    transition: opacity 0.15s linear;
+  }
+
+  .card-list-enter-active,
+  .note-enter-active {
+    transition-delay: 0s;
+  }
+
+  .card-list-enter-from,
+  .card-list-leave-to {
+    transform: none;
+  }
 }

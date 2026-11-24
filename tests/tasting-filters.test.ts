@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { formatYear } from '../app/utils/format';
 import { facetGroups, filterItems, parseSelection, selectionToQuery } from '../app/utils/facetFilters';
-import { tastingFilterGroups } from '../app/utils/tastingFilters';
+import { tastingFilterGroups, tastingSearchText } from '../app/utils/tastingFilters';
 
 const country = (slug: string, name: string) => ({ slug, name });
 const region = (slug: string, countrySlug: string, countryName: string) => ({ slug, name: slug, country: country(countrySlug, countryName) });
@@ -80,5 +80,13 @@ describe('tasting filters in the query', () => {
   it('round-trips through the query', () => {
     const selection = { year: ['2025'], country: ['scotland', 'japan'] };
     expect(parseSelection(selectionToQuery(selection), groups)).toEqual(selection);
+  });
+});
+
+describe('tasting search text', () => {
+  it('covers title, location, summary and every place name', () => {
+    const t = { ...tastings[0]!, title: '#16 Peaty Party', location: 'Jasper & Beppie', summary: 'Smoke' } as TastingView;
+    expect(tastingSearchText(t)).toEqual(['#16 Peaty Party', 'Jasper & Beppie', 'Smoke', 'islay', 'Scotland', 'speyside', 'Scotland']);
+    expect(tastingSearchText({ ...tastings[3]!, title: 'T' } as TastingView)).toEqual(['T']);
   });
 });

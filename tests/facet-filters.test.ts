@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  byFixedOrder, byLabel, byValueDescending, facetGroups, facetValue, filterItems, parseSelection, selectedTotal, selectionToQuery, toggleValue,
+  byFixedOrder, byLabel, byValueDescending, facetGroups, facetValue, filterItems, normalizeText, parseSelection, searchItems, selectedTotal, selectionToQuery, texts, toggleValue,
   type FilterGroup,
 } from '../app/utils/facetFilters';
 
@@ -106,5 +106,38 @@ describe('selection in the query', () => {
     expect(toggleValue(one, 'colour', 'blue')).toEqual({ colour: ['red', 'blue'] });
     expect(toggleValue(one, 'colour', 'red')).toEqual({ colour: [] });
     expect(selectedTotal({ colour: ['red', 'blue'], tag: ['oak'] })).toBe(3);
+  });
+});
+
+describe('search', () => {
+  const textOf = (item: Item) => texts(item.colour, ...item.tags);
+  const found = (query: string) => searchItems(items, textOf, query).map(i => i.id);
+
+  it('normalises case and accents', () => {
+    expect(normalizeText('Café ÉCOSSE')).toBe('cafe ecosse');
+    expect(found('SHERRY')).toEqual(['1']);
+    expect(searchItems([{ id: 'x', tags: ['Café'] }], textOf, 'cafe').length).toBe(1);
+  });
+
+  it('matches substrings and requires every word', () => {
+    expect(found('ou')).toEqual(['3']);
+    expect(found('oak red')).toEqual(['1', '2']);
+    expect(found('oak red sherry bourbon')).toEqual([]);
+  });
+
+  it('does not restrict on an empty query or without searchable text', () => {
+    expect(found('')).toEqual(['1', '2', '3', '4']);
+    expect(found('   ')).toEqual(['1', '2', '3', '4']);
+    expect(searchItems(items, undefined, 'zzz')).toEqual(items);
+  });
+
+  it('skips missing texts', () => {
+    expect(texts('a', undefined, '', 'b')).toEqual(['a', 'b']);
+  });
+
+  it('counts only the searched items but keeps every option', () => {
+    const searched = searchItems(items, textOf, 'red');
+    const group = facetGroups(items, groups, {}, searched).find(g => g.key === 'tag')!;
+    expect(group.options.map(o => [o.label, o.count])).toEqual([['Bourbon', 0], ['Oak', 2], ['sherry', 1]]);
   });
 });

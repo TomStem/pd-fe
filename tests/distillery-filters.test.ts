@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { facetGroups, filterItems } from '../app/utils/facetFilters';
-import { distilleryFilterGroups } from '../app/utils/distilleryFilters';
+import { distilleryFilterGroups, distillerySearchText } from '../app/utils/distilleryFilters';
 
 const scotland = { slug: 'scotland', name: 'Scotland', flag: undefined };
 const japan = { slug: 'japan', name: 'Japan', flag: undefined };
@@ -40,5 +40,12 @@ describe('distillery filter groups', () => {
   it('follows the selection of the other groups in the counts', () => {
     expect(options(distilleries, { country: ['japan'] }).region).toEqual([['honshu', 1], ['islands', 0], ['islay', 0]]);
     expect(filterItems(distilleries, distilleryFilterGroups, { country: ['scotland'], visitable: ['no'] }).map(d => d.slug)).toEqual(['jura']);
+  });
+});
+
+describe('distillery search text', () => {
+  it('covers name, town, region and country', () => {
+    expect(distillerySearchText({ ...distilleries[0]!, town: 'Port Ellen' } as DistilleryView)).toEqual(['ardbeg', 'Port Ellen', 'islay', 'Scotland']);
+    expect(distillerySearchText(distilleries[2]!)).toEqual(['oban', 'Scotland']);
   });
 });

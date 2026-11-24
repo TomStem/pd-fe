@@ -1,9 +1,6 @@
 <script setup lang="ts">
-const props = defineProps<{ groups: FacetGroup[]; selection: FilterSelection }>();
+defineProps<{ groups: FacetGroup[]; selection: FilterSelection; active: boolean }>();
 const emit = defineEmits<{ toggle: [key: string, value: string]; clear: [] }>();
-
-const active = computed(() => selectedTotal(props.selection) > 0);
-const isSelected = (key: string, value: string) => props.selection[key]?.includes(value) ?? false;
 </script>
 
 <template>
@@ -23,8 +20,8 @@ const isSelected = (key: string, value: string) => props.selection[key]?.include
           :key="option.value"
           type="button"
           class="filter-pill"
-          :class="{ 'opacity-50': option.count === 0 && !isSelected(group.key, option.value) }"
-          :aria-pressed="isSelected(group.key, option.value)"
+          :class="{ 'opacity-50': option.count === 0 && !selection[group.key]?.includes(option.value) }"
+          :aria-pressed="selection[group.key]?.includes(option.value) ?? false"
           @click="emit('toggle', group.key, option.value)"
         >
           {{ option.label }} <span class="opacity-60">{{ option.count }}</span>

@@ -42,21 +42,38 @@ function matches<T>(item: T, groups: FilterGroup<T>[], selection: FilterSelectio
   });
 }
 
+/** The texts of an item to search in, without the missing ones. */
+export const texts = (...values: (string | undefined)[]) => values.filter((value): value is string => Boolean(value));
+
+/** Lowercase without accents, so "Cafe" finds "Café". */
+export const normalizeText = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+
+/** An item matches when every word of the query occurs somewhere in its text; an empty query matches everything. */
+export function searchItems<T>(items: T[], textOf: ((item: T) => string[]) | undefined, query: string): T[] {
+  const words = normalizeText(query).split(/\s+/).filter(Boolean);
+  if (!textOf || !words.length) return items;
+  return items.filter((item) => {
+    const text = normalizeText(textOf(item).join(' '));
+    return words.every(word => text.includes(word));
+  });
+}
+
 export const filterItems = <T>(items: T[], groups: FilterGroup<T>[], selection: FilterSelection) =>
   items.filter(item => matches(item, groups, selection));
 
 /**
  * The groups worth showing: a group with fewer than two options cannot narrow anything and is left out.
- * An option's count is the number of items that have it within the selection of the other groups.
+ * The options come from all items; an option's count is the number of items that have it within the selection of the other groups,
+ * counting only `counted` (the items that pass the search).
  */
-export function facetGroups<T>(items: T[], groups: FilterGroup<T>[], selection: FilterSelection = {}): FacetGroup[] {
+export function facetGroups<T>(items: T[], groups: FilterGroup<T>[], selection: FilterSelection = {}, counted: T[] = items): FacetGroup[] {
   return groups.flatMap((group) => {
     const labels = new Map<string, string>();
     for (const item of items) {
       for (const { value, label } of group.values(item)) if (!labels.has(value)) labels.set(value, label);
     }
     if (labels.size < 2) return [];
-    const others = items.filter(item => matches(item, groups, selection, group.key));
+    const others = counted.filter(item => matches(item, groups, selection, group.key));
     const options = [...labels]
       .map(([value, label]) => ({ value, label, count: others.filter(item => group.values(item).some(v => v.value === value)).length }))
       .sort(group.compare ?? byLabel);

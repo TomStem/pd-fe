@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { facetGroups, filterItems, parseSelection } from '../app/utils/facetFilters';
-import { ageBucket, ratingBuckets, sortWhiskies, whiskyFilterGroups, whiskySorts } from '../app/utils/whiskyFilters';
+import { ageBucket, ratingBuckets, sortWhiskies, whiskyFilterGroups, whiskySearchText, whiskySorts } from '../app/utils/whiskyFilters';
 
 const whisky = (name: string, extra: Partial<WhiskyView> = {}) =>
   ({
@@ -91,5 +91,12 @@ describe('sorting whiskies', () => {
     const before = whiskies.map(w => w.name);
     sortWhiskies(whiskies, 'abv');
     expect(whiskies.map(w => w.name)).toEqual(before);
+  });
+});
+
+describe('whisky search text', () => {
+  it('covers name, distillery, region, country and casks', () => {
+    expect(whiskySearchText(whiskies[0]!)).toEqual(['Ardbeg 5', 'Ardbeg', 'Islay', 'Scotland', 'Bourbon', 'Oloroso Sherry']);
+    expect(whiskySearchText(whiskies[5]!)).toEqual(['Mystery', 'Distillery One']);
   });
 });

@@ -1,4 +1,4 @@
-import { byFixedOrder, facetValue, type FacetValue, type FilterGroup } from './facetFilters';
+import { byFixedOrder, facetValue, texts, type FacetValue, type FilterGroup } from './facetFilters';
 
 const AGE_BUCKETS: FacetValue[] = [
   { value: 'nas', label: 'NAS' },
@@ -30,6 +30,8 @@ export function ratingBuckets({ averageRating }: Pick<WhiskyView, 'averageRating
   if (averageRating === undefined) return [bucket(RATING_BUCKETS, 'unrated')];
   return RATING_BUCKETS.filter(({ value }) => (value === '4-plus' && averageRating >= 4) || (value === '3-plus' && averageRating >= 3));
 }
+
+export const whiskySearchText = (w: WhiskyView) => texts(w.name, w.distillery.name, w.region?.name, w.country?.name, ...w.casks);
 
 const optional = <T>(value: T | undefined): T[] => (value === undefined ? [] : [value]);
 

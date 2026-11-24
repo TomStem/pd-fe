@@ -2,7 +2,7 @@
 const distilleries = await useContentFetch<DistilleryView[]>('/api/distilleries');
 usePageSeo({ title: 'Distilleries', description: 'All distilleries on the map and in the list, filterable by country, region and visiting.' });
 
-const { groups, selection, visible, selectedCount, toggle, clear } = useFacetFilters(distilleries, distilleryFilterGroups);
+const filters = useFacetFilters(distilleries, distilleryFilterGroups, distillerySearchText);
 </script>
 
 <template>
@@ -14,27 +14,25 @@ const { groups, selection, visible, selectedCount, toggle, clear } = useFacetFil
     />
 
     <FilterLayout
-      :groups="groups"
-      :selection="selection"
-      :count-label="`${visible.length} ${visible.length === 1 ? 'distillery' : 'distilleries'}`"
-      @toggle="toggle"
-      @clear="clear"
+      :filters="filters"
+      search-label="Search distilleries"
+      :count-label="`${filters.visible.length} ${filters.visible.length === 1 ? 'distillery' : 'distilleries'}`"
     >
       <template #default="{ hasGroups }">
         <DistilleryMap
-          v-if="visible.length"
-          :distilleries="visible"
+          v-if="filters.visible.length"
+          :distilleries="filters.visible"
           :class="hasGroups ? 'mt-4' : 'mt-6'"
         />
         <AnimatedGrid
           :narrow="hasGroups"
-          :empty="!visible.length"
+          :empty="!filters.visible.length"
           :empty-text="distilleries.length ? 'No distilleries match these filters.' : 'No distilleries added yet.'"
-          :clearable="selectedCount > 0"
-          @clear="clear"
+          :clearable="filters.activeCount > 0"
+          @clear="filters.clear"
         >
           <DistilleryCard
-            v-for="(distillery, index) in visible"
+            v-for="(distillery, index) in filters.visible"
             :key="distillery.slug"
             :distillery="distillery"
             :style="{ '--i': Math.min(index, 8) }"

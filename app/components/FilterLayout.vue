@@ -1,61 +1,84 @@
 <script setup lang="ts">
 const props = defineProps<{
-  groups: FacetGroup[];
-  selection: FilterSelection;
+  filters: FacetFilters;
+  /** Names what is searched, e.g. "Search tastings". */
+  searchLabel: string;
   /** Result count, e.g. "17 tastings". */
   countLabel: string;
 }>();
-const emit = defineEmits<{ toggle: [key: string, value: string]; clear: [] }>();
 
-const hasGroups = computed(() => props.groups.length > 0);
-const selectedCount = computed(() => selectedTotal(props.selection));
+const hasPanel = computed(() => props.filters.groups.length > 0);
 </script>
 
 <template>
   <div
     class="container-page pb-14"
-    :class="hasGroups && 'lg:grid lg:grid-cols-[15rem_1fr] lg:items-start lg:gap-8'"
+    :class="hasPanel && 'lg:grid lg:grid-cols-[15rem_1fr] lg:items-start lg:gap-8'"
   >
-    <template v-if="hasGroups">
-      <details class="card mt-6 lg:hidden">
-        <summary class="flex cursor-pointer items-center justify-between p-4 font-semibold">
-          Filter
-          <span
-            v-if="selectedCount"
-            class="text-sm font-normal text-sherry"
-          >{{ selectedCount }} selected</span>
-        </summary>
-        <FilterPanel
-          :groups="groups"
-          :selection="selection"
-          class="border-t border-line p-4"
-          @toggle="(key, value) => emit('toggle', key, value)"
-          @clear="emit('clear')"
+    <template v-if="hasPanel">
+      <div class="mt-6 space-y-3 lg:hidden">
+        <SearchField
+          v-if="filters.searchable"
+          :model-value="filters.searchInput"
+          :label="searchLabel"
+          @update:model-value="filters.setSearch"
         />
-      </details>
+        <details class="card">
+          <summary class="flex cursor-pointer items-center justify-between p-4 font-semibold">
+            Filter
+            <span
+              v-if="filters.activeCount"
+              class="text-sm font-normal text-sherry"
+            >{{ filters.activeCount }} selected</span>
+          </summary>
+          <FilterPanel
+            :groups="filters.groups"
+            :selection="filters.selection"
+            :active="filters.activeCount > 0"
+            class="border-t border-line p-4"
+            @toggle="filters.toggle"
+            @clear="filters.clear"
+          />
+        </details>
+      </div>
       <aside class="sticky top-24 mt-6 hidden lg:block">
         <div class="card max-h-[calc(100vh-7.5rem)] overflow-y-auto p-5">
           <h2 class="text-lg font-bold">
             Filter
           </h2>
-          <FilterPanel
-            :groups="groups"
-            :selection="selection"
+          <SearchField
+            v-if="filters.searchable"
+            :model-value="filters.searchInput"
+            :label="searchLabel"
             class="mt-4"
-            @toggle="(key, value) => emit('toggle', key, value)"
-            @clear="emit('clear')"
+            @update:model-value="filters.setSearch"
+          />
+          <FilterPanel
+            :groups="filters.groups"
+            :selection="filters.selection"
+            :active="filters.activeCount > 0"
+            class="mt-5"
+            @toggle="filters.toggle"
+            @clear="filters.clear"
           />
         </div>
       </aside>
     </template>
 
     <div class="min-w-0">
+      <SearchField
+        v-if="!hasPanel && filters.searchable"
+        :model-value="filters.searchInput"
+        :label="searchLabel"
+        class="mt-6 max-w-md"
+        @update:model-value="filters.setSearch"
+      />
       <div
-        v-if="hasGroups || $slots.toolbar"
+        v-if="hasPanel || filters.searchable || $slots.toolbar"
         class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 lg:mt-6"
       >
         <p
-          v-if="hasGroups"
+          v-if="hasPanel || filters.searchable"
           class="text-sm text-smoke"
           aria-live="polite"
         >
@@ -63,7 +86,7 @@ const selectedCount = computed(() => selectedTotal(props.selection));
         </p>
         <slot name="toolbar" />
       </div>
-      <slot :has-groups="hasGroups" />
+      <slot :has-groups="hasPanel" />
     </div>
   </div>
 </template>

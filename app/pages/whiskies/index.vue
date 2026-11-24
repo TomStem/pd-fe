@@ -4,7 +4,7 @@ usePageSeo({ title: 'Whiskies', description: 'The whiskies from our tastings, wi
 
 const { sort, setSort } = useSortParam(whiskySorts);
 const sorted = computed(() => sortWhiskies(whiskies.value, sort.value));
-const { groups, selection, visible, selectedCount, toggle, clear } = useFacetFilters(sorted, whiskyFilterGroups);
+const filters = useFacetFilters(sorted, whiskyFilterGroups, whiskySearchText);
 </script>
 
 <template>
@@ -16,11 +16,9 @@ const { groups, selection, visible, selectedCount, toggle, clear } = useFacetFil
     />
 
     <FilterLayout
-      :groups="groups"
-      :selection="selection"
-      :count-label="`${visible.length} ${visible.length === 1 ? 'whisky' : 'whiskies'}`"
-      @toggle="toggle"
-      @clear="clear"
+      :filters="filters"
+      search-label="Search whiskies"
+      :count-label="`${filters.visible.length} ${filters.visible.length === 1 ? 'whisky' : 'whiskies'}`"
     >
       <template
         v-if="whiskies.length > 1"
@@ -45,13 +43,13 @@ const { groups, selection, visible, selectedCount, toggle, clear } = useFacetFil
       <template #default="{ hasGroups }">
         <AnimatedGrid
           :narrow="hasGroups"
-          :empty="!visible.length"
+          :empty="!filters.visible.length"
           :empty-text="whiskies.length ? 'No whiskies match these filters.' : 'No whiskies added yet.'"
-          :clearable="selectedCount > 0"
-          @clear="clear"
+          :clearable="filters.activeCount > 0"
+          @clear="filters.clear"
         >
           <WhiskyCard
-            v-for="(whisky, index) in visible"
+            v-for="(whisky, index) in filters.visible"
             :key="whisky.slug"
             :whisky="whisky"
             :style="{ '--i': Math.min(index, 8) }"

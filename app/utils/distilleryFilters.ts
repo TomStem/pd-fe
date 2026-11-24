@@ -1,4 +1,6 @@
-import { byFixedOrder, type FilterGroup } from './facetFilters';
+import { byFixedOrder, texts, type FilterGroup } from './facetFilters';
+
+export const distillerySearchText = (d: DistilleryView) => texts(d.name, d.town, d.region?.name, d.country.name);
 
 export const distilleryFilterGroups: FilterGroup<DistilleryView>[] = [
   { key: 'country', label: 'Country', values: d => [{ value: d.country.slug, label: d.country.name }] },

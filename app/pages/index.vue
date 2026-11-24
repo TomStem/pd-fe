@@ -5,6 +5,7 @@ usePageSeo({ title: 'Bad decisions. Good whisky.' });
 const next = computed(() => home.value.nextTasting ?? home.value.latestTasting);
 const nextLabel = computed(() => (home.value.nextTasting ? 'Next tasting' : 'Latest tasting'));
 const nextPlaces = computed(() => next.value && placeTag(tastingPlaces(next.value)));
+const showTastings = computed(() => home.value.tastings.length > 0 || !next.value);
 </script>
 
 <template>
@@ -65,6 +66,7 @@ const nextPlaces = computed(() => next.value && placeTag(tastingPlaces(next.valu
     </HeroSection>
 
     <SectionBlock
+      v-if="showTastings"
       title="Tastings"
       to="/tastings"
       link-label="All tastings"

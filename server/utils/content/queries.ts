@@ -101,10 +101,13 @@ export function getHome(store: ContentStore, now = new Date()): HomeData {
     ...store.whiskies.map(w => lookup.whiskyView(w)?.country?.slug),
     ...tastings.flatMap(t => [...t.countries.map(c => c.slug), ...t.regions.map(r => r.country.slug)]),
   ]);
+  const nextTasting = tastings.filter(t => t.isUpcoming).at(-1);
+  const latestTasting = tastings.find(t => !t.isUpcoming);
+  const hero = nextTasting ?? latestTasting;
   return {
-    nextTasting: tastings.filter(t => t.isUpcoming).at(-1),
-    latestTasting: tastings.find(t => !t.isUpcoming),
-    tastings: tastings.slice(0, 3),
+    nextTasting,
+    latestTasting,
+    tastings: tastings.filter(t => t.slug !== hero?.slug).slice(0, 3),
     trips: lookup.trips().slice(0, 2),
     countries: byName(store.countries.filter(c => withContent.has(c.slug))).map(lookup.countryView),
   };

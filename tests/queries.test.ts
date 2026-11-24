@@ -36,11 +36,11 @@ describe('queries', () => {
     expect(getHome(store, later).nextTasting).toBeUndefined();
   });
 
-  it('picks the next tasting for the home page', () => {
+  it('picks the hero tasting for the home page and leaves it out of the list', () => {
     const home = getHome(store, now);
     expect(home.nextTasting?.slug).toBe('islay-night-rook-en-zeewind');
     expect(home.latestTasting?.slug).toBe('turf-of-geen-turf');
-    expect(home.tastings.map(t => t.slug)).toEqual(['islay-night-rook-en-zeewind', 'turf-of-geen-turf', 'raad-de-dram']);
+    expect(home.tastings.map(t => t.slug)).toEqual(['turf-of-geen-turf', 'raad-de-dram', 'speyside-sherrybommen']);
     expect(home.trips.map(t => t.slug)).toEqual(['japan-van-yamazaki-tot-yoichi', 'islay-pelgrimage']);
   });
 
@@ -99,12 +99,17 @@ describe('queries', () => {
       .toEqual(['islay-night-rook-en-zeewind', 'turf-of-geen-turf', 'speyside-sherrybommen']);
   });
 
-  it('has no next tasting when none is upcoming, falls back to the latest and still lists the newest three', () => {
+  it('falls back to the latest tasting in the hero when none is upcoming and does not repeat it in the list', () => {
     const past: ContentStore = { ...store, tastings: store.tastings.filter(t => !isUpcoming(t.date, now)) };
     const home = getHome(past, now);
     expect(home.nextTasting).toBeUndefined();
     expect(home.latestTasting?.slug).toBe('turf-of-geen-turf');
-    expect(home.tastings.map(t => t.slug)).toEqual(['turf-of-geen-turf', 'raad-de-dram', 'speyside-sherrybommen']);
+    expect(home.tastings.map(t => t.slug)).toEqual(['raad-de-dram', 'speyside-sherrybommen', 'japanse-finesse']);
+  });
+
+  it('leaves the list empty when the only tasting is shown in the hero', () => {
+    const single: ContentStore = { ...store, tastings: store.tastings.slice(0, 1) };
+    expect(getHome(single, now).tastings).toEqual([]);
   });
 
   it('finds all tastings that pour a whisky of a distillery', () => {

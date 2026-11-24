@@ -92,6 +92,7 @@ useHead({
         height-class="aspect-[8/3]"
         :image-width="1200"
         :image-height="450"
+        sizes="sm:100vw md:100vw lg:640px"
         class="mt-6 rounded-card"
       >
         <template #placeholder>

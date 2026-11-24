@@ -7,7 +7,8 @@ const props = withDefaults(defineProps<{
   heightClass?: string;
   imageWidth?: number;
   imageHeight?: number;
-}>(), { alt: '', heightClass: 'h-32', src: undefined, slugs: () => [], tags: () => [], imageWidth: 800, imageHeight: 450 });
+  sizes?: string;
+}>(), { alt: '', heightClass: 'h-32', src: undefined, slugs: () => [], tags: () => [], imageWidth: 800, imageHeight: 450, sizes: 'sm:100vw md:50vw lg:400px' });
 
 const visibleTags = computed(() => props.tags.filter(Boolean));
 </script>
@@ -23,7 +24,7 @@ const visibleTags = computed(() => props.tags.filter(Boolean));
       :alt="alt"
       :width="imageWidth"
       :height="imageHeight"
-      sizes="sm:100vw md:50vw lg:400px"
+      :sizes="sizes"
       loading="lazy"
       class="size-full object-cover"
     />

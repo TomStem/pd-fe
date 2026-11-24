@@ -1,11 +1,9 @@
 import tailwindcss from '@tailwindcss/vite';
 
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || 'https://pourdecisions.nl';
-// Fully static output (drag & drop upload); content and upcoming/past state are then frozen at generate time.
 const staticExport = process.env.STATIC_EXPORT === 'true';
 
 export default defineNuxtConfig({
-
   modules: ['@nuxt/eslint', '@nuxt/fonts', '@nuxt/image', '@nuxtjs/sitemap'],
   $production: {
     routeRules: staticExport
@@ -64,7 +62,9 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: staticExport ? ['/', '/countries', '/about', '/contact'] : ['/about', '/contact'],
+      routes: staticExport
+        ? ['/', '/countries', '/about', '/contact']
+        : ['/about', '/contact'],
       crawlLinks: true,
       failOnError: true,
     },
@@ -73,13 +73,22 @@ export default defineNuxtConfig({
 
   eslint: {
     config: {
-      stylistic: { semi: true, quotes: 'single', commaDangle: 'always-multiline' },
+      stylistic: {
+        semi: true,
+        quotes: 'single',
+        commaDangle: 'always-multiline',
+      },
     },
   },
 
   fonts: {
     families: [
-      { name: 'Fraunces', provider: 'google', weights: [500, 700], styles: ['normal', 'italic'] },
+      {
+        name: 'Fraunces',
+        provider: 'google',
+        weights: [500, 700],
+        styles: ['normal', 'italic'],
+      },
       { name: 'Inter', provider: 'google', weights: [400, 500, 600] },
     ],
   },

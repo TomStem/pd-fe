@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { formatYear } from '../app/utils/format';
 import { facetGroups, filterItems, parseSelection, selectionToQuery } from '../app/utils/facetFilters';
-import { tastingFilterGroups, tastingSearchText } from '../app/utils/tastingFilters';
+import { sortTastings, tastingFilterGroups, tastingSearchText, tastingSorts } from '../app/utils/tastingFilters';
 
 const country = (slug: string, name: string) => ({ slug, name });
 const region = (slug: string, countrySlug: string, countryName: string) => ({ slug, name: slug, country: country(countrySlug, countryName) });
@@ -88,5 +88,21 @@ describe('tasting search text', () => {
     const t = { ...tastings[0]!, title: '#16 Peaty Party', location: 'Jasper & Beppie', summary: 'Smoke' } as TastingView;
     expect(tastingSearchText(t)).toEqual(['#16 Peaty Party', 'Jasper & Beppie', 'Smoke', 'islay', 'Scotland', 'speyside', 'Scotland']);
     expect(tastingSearchText({ ...tastings[3]!, title: 'T' } as TastingView)).toEqual(['T']);
+  });
+});
+
+describe('sorting tastings', () => {
+  const titled = ['#2 Whisky Beyond', '#11 Cask finishes', '#1 Japanese', 'Äpfel night'].map((title, i) => ({ ...tasting(`t${i}`, ['2023-05-01', '2025-01-01', '2022-01-01', '2024-01-01'][i]!), title }) as TastingView);
+  const order = (sort: Parameters<typeof sortTastings>[1]) => sortTastings(titled, sort).map(t => t.slug);
+
+  it('sorts newest first by default and oldest first on request', () => {
+    expect(tastingSorts[0].value).toBe('newest');
+    expect(order('newest')).toEqual(['t1', 't3', 't0', 't2']);
+    expect(order('oldest')).toEqual(['t2', 't0', 't3', 't1']);
+  });
+
+  it('sorts by title with numbers in natural order and does not change the input', () => {
+    expect(order('title')).toEqual(['t2', 't0', 't1', 't3']);
+    expect(titled.map(t => t.slug)).toEqual(['t0', 't1', 't2', 't3']);
   });
 });

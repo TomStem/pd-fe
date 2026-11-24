@@ -2,7 +2,7 @@
 const whiskies = await useContentFetch<WhiskyView[]>('/api/whiskies');
 usePageSeo({ title: 'Whiskies', description: 'The whiskies from our tastings, with tasting notes and reviews.' });
 
-const { sort, setSort } = useSortParam(whiskySorts);
+const { choice: sort, setChoice: setSort } = useChoiceParam('sort', whiskySorts);
 const sorted = computed(() => sortWhiskies(whiskies.value, sort.value));
 const filters = useFacetFilters(sorted, whiskyFilterGroups, whiskySearchText);
 </script>
@@ -24,20 +24,11 @@ const filters = useFacetFilters(sorted, whiskyFilterGroups, whiskySearchText);
         v-if="whiskies.length > 1"
         #toolbar
       >
-        <label class="ml-auto flex items-center gap-2 text-sm text-smoke">
-          Sort by
-          <select
-            :value="sort"
-            class="rounded-full border border-line bg-paper px-3 py-1.5 text-sm text-oak"
-            @change="setSort(($event.target as HTMLSelectElement).value as WhiskySort)"
-          >
-            <option
-              v-for="option in whiskySorts"
-              :key="option.value"
-              :value="option.value"
-            >{{ option.label }}</option>
-          </select>
-        </label>
+        <SortSelect
+          :model-value="sort"
+          :options="whiskySorts"
+          @update:model-value="setSort"
+        />
       </template>
 
       <template #default="{ hasGroups }">

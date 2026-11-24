@@ -1,8 +1,8 @@
 import { formatYear } from './format';
 
 export interface TastingFilters {
-  year?: string;
-  country?: string;
+  years: string[];
+  countries: string[];
 }
 
 export interface FacetOption {
@@ -23,25 +23,28 @@ function tastingCountries({ countries, regions }: Pick<TastingView, 'countries' 
   return [...new Map([...countries, ...regions.map(r => r.country)].map(c => [c.slug, c])).values()];
 }
 
-const inCountry = (tasting: TastingView, slug: string) => tastingCountries(tasting).some(c => c.slug === slug);
+const inAny = (selected: string[], values: string[]) => !selected.length || values.some(value => selected.includes(value));
+const yearOf = (tasting: TastingView) => formatYear(tasting.date);
+const countrySlugsOf = (tasting: TastingView) => tastingCountries(tasting).map(c => c.slug);
 
-export const filterTastings = (tastings: TastingView[], { year, country }: TastingFilters) =>
-  tastings.filter(t => (!year || formatYear(t.date) === year) && (!country || inCountry(t, country)));
+/** A tasting matches when its year is in the selected years and one of its countries is in the selected countries; an empty selection does not restrict. */
+export const filterTastings = (tastings: TastingView[], { years = [], countries = [] }: Partial<TastingFilters>) =>
+  tastings.filter(t => inAny(years, [yearOf(t)]) && inAny(countries, countrySlugsOf(t)));
 
-/** Only facets with at least two options are returned: a single option cannot narrow anything. Counts respect the other filter. */
-export function tastingFacets(tastings: TastingView[], filters: TastingFilters = {}): TastingFacets {
+/** Only facets with at least two options are returned: a single option cannot narrow anything. Each count is taken within the selection of the other filter. */
+export function tastingFacets(tastings: TastingView[], filters: Partial<TastingFilters> = {}): TastingFacets {
   const countryNames = new Map<string, string>();
   for (const tasting of tastings) {
     for (const country of tastingCountries(tasting)) countryNames.set(country.slug, country.name);
   }
-  const years = [...new Set(tastings.map(t => formatYear(t.date)))].sort((a, b) => b.localeCompare(a));
-  const inYear = filterTastings(tastings, { year: filters.year });
-  const inChosenCountry = filterTastings(tastings, { country: filters.country });
+  const years = [...new Set(tastings.map(yearOf))].sort((a, b) => b.localeCompare(a));
+  const inSelectedYears = filterTastings(tastings, { years: filters.years });
+  const inSelectedCountries = filterTastings(tastings, { countries: filters.countries });
 
   const facets: TastingFacets = {
-    years: years.map(value => ({ value, label: value, count: inChosenCountry.filter(t => formatYear(t.date) === value).length })),
+    years: years.map(value => ({ value, label: value, count: inSelectedCountries.filter(t => yearOf(t) === value).length })),
     countries: [...countryNames]
-      .map(([value, label]) => ({ value, label, count: inYear.filter(t => inCountry(t, value)).length }))
+      .map(([value, label]) => ({ value, label, count: inSelectedYears.filter(t => countrySlugsOf(t).includes(value)).length }))
       .sort((a, b) => collator.compare(a.label, b.label)),
   };
   return {
@@ -50,11 +53,17 @@ export function tastingFacets(tastings: TastingView[], filters: TastingFilters =
   };
 }
 
-/** Takes the filters from a query string; values that are not an option are ignored. */
+/** Takes the filters from comma-separated query values; items that are not an option are dropped. */
 export function parseFilters(query: Record<string, unknown>, facets: TastingFacets): TastingFilters {
   const pick = (value: unknown, options: FacetOption[]) => {
-    const first = Array.isArray(value) ? value[0] : value;
-    return typeof first === 'string' && options.some(o => o.value === first) ? first : undefined;
+    const items = (Array.isArray(value) ? value : [value]).flatMap(v => (typeof v === 'string' ? v.split(',') : []));
+    return [...new Set(items.filter(item => options.some(o => o.value === item)))];
   };
-  return { year: pick(query.year, facets.years), country: pick(query.country, facets.countries) };
+  return { years: pick(query.year, facets.years), countries: pick(query.country, facets.countries) };
 }
+
+/** Query string values for a selection, without the empty filters. */
+export const filtersToQuery = ({ years, countries }: TastingFilters) => ({
+  ...(years.length && { year: years.join(',') }),
+  ...(countries.length && { country: countries.join(',') }),
+});

@@ -3,13 +3,16 @@ const props = defineProps<{ facets: TastingFacets; filters: TastingFilters }>();
 const emit = defineEmits<{ change: [filters: TastingFilters] }>();
 
 const groups = computed(() => [
-  { key: 'year', label: 'Year', options: props.facets.years },
-  { key: 'country', label: 'Country', options: props.facets.countries },
+  { key: 'years', label: 'Year', options: props.facets.years },
+  { key: 'countries', label: 'Country', options: props.facets.countries },
 ] as const);
 
-const active = computed(() => Boolean(props.filters.year || props.filters.country));
+const active = computed(() => props.filters.years.length + props.filters.countries.length > 0);
 
-const choose = (key: 'year' | 'country', value: string | undefined) => emit('change', { ...props.filters, [key]: value });
+function toggle(key: 'years' | 'countries', value: string) {
+  const selected = props.filters[key];
+  emit('change', { ...props.filters, [key]: selected.includes(value) ? selected.filter(v => v !== value) : [...selected, value] });
+}
 </script>
 
 <template>
@@ -25,21 +28,13 @@ const choose = (key: 'year' | 'country', value: string | undefined) => emit('cha
       </p>
       <div class="mt-2 flex flex-wrap gap-1.5">
         <button
-          type="button"
-          class="filter-pill"
-          :aria-pressed="!filters[group.key]"
-          @click="choose(group.key, undefined)"
-        >
-          All
-        </button>
-        <button
           v-for="option in group.options"
           :key="option.value"
           type="button"
           class="filter-pill"
-          :aria-pressed="filters[group.key] === option.value"
-          :disabled="option.count === 0 && filters[group.key] !== option.value"
-          @click="choose(group.key, option.value)"
+          :class="{ 'opacity-50': option.count === 0 && !filters[group.key].includes(option.value) }"
+          :aria-pressed="filters[group.key].includes(option.value)"
+          @click="toggle(group.key, option.value)"
         >
           {{ option.label }} <span class="opacity-60">{{ option.count }}</span>
         </button>
@@ -49,7 +44,7 @@ const choose = (key: 'year' | 'country', value: string | undefined) => emit('cha
       v-if="active"
       type="button"
       class="text-sm text-sherry underline underline-offset-2 hover:no-underline"
-      @click="emit('change', {})"
+      @click="emit('change', { years: [], countries: [] })"
     >
       Clear filters
     </button>

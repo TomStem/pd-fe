@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { formatYear } from '../app/utils/format';
-import { filterTastings, parseFilters, tastingFacets } from '../app/utils/tastingFilters';
+import { filterTastings, filtersToQuery, parseFilters, tastingFacets } from '../app/utils/tastingFilters';
 
 const country = (slug: string, name: string) => ({ slug, name });
 const region = (slug: string, countrySlug: string, countryName: string) => ({ slug, name: slug, country: country(countrySlug, countryName) });
@@ -31,15 +31,15 @@ describe('tasting facets', () => {
   });
 
   it('counts a country once per tasting, whether linked directly or through regions', () => {
-    const scotland = tastingFacets(tastings).countries.find(c => c.value === 'scotland');
-    expect(scotland?.count).toBe(2);
+    expect(tastingFacets(tastings).countries.find(c => c.value === 'scotland')?.count).toBe(2);
   });
 
-  it('lets counts follow the other active filter', () => {
-    const facets = tastingFacets(tastings, { country: 'scotland' });
-    expect(facets.years.map(y => [y.value, y.count])).toEqual([['2025', 2], ['2024', 0], ['2023', 0]]);
-    expect(tastingFacets(tastings, { year: '2024' }).countries.map(c => [c.value, c.count]))
-      .toEqual([['japan', 0], ['scotland', 0], ['united-states', 1]]);
+  it('takes each count within the selection of the other filter', () => {
+    const byCountry = tastingFacets(tastings, { countries: ['scotland', 'united-states'] });
+    expect(byCountry.years.map(y => [y.value, y.count])).toEqual([['2025', 2], ['2024', 1], ['2023', 0]]);
+    const byYear = tastingFacets(tastings, { years: ['2024', '2025'] });
+    expect(byYear.countries.map(c => [c.value, c.count])).toEqual([['japan', 1], ['scotland', 2], ['united-states', 1]]);
+    expect(tastingFacets(tastings, { years: ['2023'] }).countries.map(c => c.count)).toEqual([0, 0, 0]);
   });
 
   it('omits a facet without at least two options', () => {
@@ -51,30 +51,48 @@ describe('tasting facets', () => {
 });
 
 describe('filtering tastings', () => {
-  it('filters by year, by country and by both, keeping the order', () => {
-    expect(filterTastings(tastings, {}).map(t => t.slug)).toEqual(['a', 'b', 'c', 'd']);
-    expect(filterTastings(tastings, { year: '2025' }).map(t => t.slug)).toEqual(['a', 'b']);
-    expect(filterTastings(tastings, { country: 'scotland' }).map(t => t.slug)).toEqual(['a', 'b']);
-    expect(filterTastings(tastings, { country: 'japan', year: '2025' }).map(t => t.slug)).toEqual(['b']);
-    expect(filterTastings(tastings, { country: 'japan', year: '2024' })).toEqual([]);
+  const slugs = (filters: Parameters<typeof filterTastings>[1]) => filterTastings(tastings, filters).map(t => t.slug);
+
+  it('does not restrict without a selection and keeps the order', () => {
+    expect(slugs({})).toEqual(['a', 'b', 'c', 'd']);
+    expect(slugs({ years: [], countries: [] })).toEqual(['a', 'b', 'c', 'd']);
+  });
+
+  it('matches any selected year and any selected country', () => {
+    expect(slugs({ years: ['2025', '2023'] })).toEqual(['a', 'b', 'd']);
+    expect(slugs({ countries: ['japan', 'united-states'] })).toEqual(['b', 'c']);
+    expect(slugs({ countries: ['scotland'] })).toEqual(['a', 'b']);
+  });
+
+  it('requires both filters to match', () => {
+    expect(slugs({ years: ['2025'], countries: ['japan', 'united-states'] })).toEqual(['b']);
+    expect(slugs({ years: ['2024', '2023'], countries: ['scotland'] })).toEqual([]);
   });
 });
 
 describe('parsing filters from the query', () => {
   const facets = tastingFacets(tastings);
 
-  it('accepts known values', () => {
-    expect(parseFilters({ year: '2025', country: 'scotland' }, facets)).toEqual({ year: '2025', country: 'scotland' });
-    expect(parseFilters({ year: ['2024', '2025'] }, facets)).toEqual({ year: '2024', country: undefined });
+  it('accepts comma-separated and repeated values', () => {
+    expect(parseFilters({ year: '2024,2025', country: 'scotland,japan' }, facets)).toEqual({ years: ['2024', '2025'], countries: ['scotland', 'japan'] });
+    expect(parseFilters({ year: ['2024', '2025,2023'] }, facets)).toEqual({ years: ['2024', '2025', '2023'], countries: [] });
   });
 
-  it('ignores invalid values', () => {
-    expect(parseFilters({ year: '1999', country: 'atlantis' }, facets)).toEqual({ year: undefined, country: undefined });
-    expect(parseFilters({ year: 2025, country: null }, facets)).toEqual({ year: undefined, country: undefined });
-    expect(parseFilters({}, facets)).toEqual({ year: undefined, country: undefined });
+  it('drops invalid and duplicate items but keeps the valid ones', () => {
+    expect(parseFilters({ year: '1999,2025,2025,abc', country: 'atlantis,japan' }, facets)).toEqual({ years: ['2025'], countries: ['japan'] });
+    expect(parseFilters({ year: '1999', country: 'atlantis' }, facets)).toEqual({ years: [], countries: [] });
+    expect(parseFilters({ year: 2025, country: null }, facets)).toEqual({ years: [], countries: [] });
+    expect(parseFilters({}, facets)).toEqual({ years: [], countries: [] });
   });
 
   it('ignores values of a facet that is not shown', () => {
-    expect(parseFilters({ country: 'scotland' }, tastingFacets(tastings.slice(0, 1)))).toEqual({ year: undefined, country: undefined });
+    expect(parseFilters({ country: 'scotland' }, tastingFacets(tastings.slice(0, 1)))).toEqual({ years: [], countries: [] });
+  });
+
+  it('round-trips through the query', () => {
+    expect(filtersToQuery({ years: ['2024', '2025'], countries: [] })).toEqual({ year: '2024,2025' });
+    expect(filtersToQuery({ years: [], countries: [] })).toEqual({});
+    const filters = { years: ['2025'], countries: ['scotland', 'japan'] };
+    expect(parseFilters(filtersToQuery(filters), facets)).toEqual(filters);
   });
 });

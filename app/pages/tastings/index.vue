@@ -1,19 +1,31 @@
 <script setup lang="ts">
 const tastings = await useContentFetch<TastingView[]>('/api/tastings');
-usePageSeo({ title: 'Tastings', description: 'The themes Pour Decisions has tasted, newest first.' });
+usePageSeo({
+  title: 'Tastings',
+  description: 'The themes Pour Decisions has tasted, newest first.',
+});
 
 const route = useRoute();
 const router = useRouter();
 
-const filters = computed(() => parseFilters(route.query, tastingFacets(tastings.value)));
+const filters = computed(() =>
+  parseFilters(route.query, tastingFacets(tastings.value)),
+);
 const facets = computed(() => tastingFacets(tastings.value, filters.value));
-const hasFilters = computed(() => facets.value.years.length > 0 || facets.value.countries.length > 0);
-const active = computed(() => Boolean(filters.value.year || filters.value.country));
+const hasFilters = computed(
+  () => facets.value.years.length > 0 || facets.value.countries.length > 0,
+);
+const selectedCount = computed(
+  () => filters.value.years.length + filters.value.countries.length,
+);
 const visible = computed(() => filterTastings(tastings.value, filters.value));
 
 const grid = useTemplateRef<{ $el: HTMLElement }>('grid');
 let releaseHeight: ReturnType<typeof setTimeout> | undefined;
-let boxes = new WeakMap<Element, Record<'left' | 'top' | 'width' | 'height', string>>();
+let boxes = new WeakMap<
+  Element,
+  Record<'left' | 'top' | 'width' | 'height', string>
+>();
 
 const boxOf = (card: HTMLElement) => ({
   left: `${card.offsetLeft}px`,
@@ -22,9 +34,14 @@ const boxOf = (card: HTMLElement) => ({
   height: `${card.offsetHeight}px`,
 });
 
-/** Remembers where the cards are before a filter change, because leaving cards are only noticed after the grid has reflowed. */
+/** Remembers where the cards are when the route changes, before the grid re-renders, because leaving cards are only noticed after the grid has reflowed. */
 function rememberCardBoxes() {
-  boxes = new WeakMap([...grid.value?.$el.children ?? []].map(card => [card, boxOf(card as HTMLElement)]));
+  boxes = new WeakMap(
+    [...(grid.value?.$el.children ?? [])].map((card) => [
+      card,
+      boxOf(card as HTMLElement),
+    ]),
+  );
   setTimeout(() => (boxes = new WeakMap()), 500);
 }
 
@@ -41,10 +58,10 @@ function pinLeavingCard(el: Element) {
   Object.assign(card.style, boxes.get(card) ?? boxOf(card));
 }
 
-function setFilters({ year, country }: TastingFilters) {
-  rememberCardBoxes();
-  router.replace({ query: { ...(year && { year }), ...(country && { country }) } });
-}
+watch(() => route.fullPath, rememberCardBoxes, { flush: 'sync' });
+
+const setFilters = (next: TastingFilters) =>
+  router.replace({ query: filtersToQuery(next) });
 </script>
 
 <template>
@@ -52,21 +69,24 @@ function setFilters({ year, country }: TastingFilters) {
     <PageHeader
       title="Tastings"
       kicker="Our evenings"
-      intro="The themes we've tasted, newest first."
+      intro="Every theme we’ve explored so far."
     />
 
     <div
       class="container-page pb-14"
-      :class="hasFilters && 'lg:grid lg:grid-cols-[15rem_1fr] lg:items-start lg:gap-8'"
+      :class="
+        hasFilters && 'lg:grid lg:grid-cols-[15rem_1fr] lg:items-start lg:gap-8'
+      "
     >
       <template v-if="hasFilters">
         <details class="card mt-6 lg:hidden">
-          <summary class="flex cursor-pointer items-center justify-between p-4 font-semibold">
+          <summary
+            class="flex cursor-pointer items-center justify-between p-4 font-semibold"
+          >
             Filter
-            <span
-              v-if="active"
-              class="text-sm font-normal text-sherry"
-            >Active</span>
+            <span v-if="selectedCount" class="text-sm font-normal text-sherry"
+              >{{ selectedCount }} selected</span
+            >
           </summary>
           <TastingFilters
             :facets="facets"
@@ -77,9 +97,7 @@ function setFilters({ year, country }: TastingFilters) {
         </details>
         <aside class="sticky top-24 mt-6 hidden lg:block">
           <div class="card p-5">
-            <h2 class="text-lg font-bold">
-              Filter
-            </h2>
+            <h2 class="text-lg font-bold">Filter</h2>
             <TastingFilters
               :facets="facets"
               :filters="filters"
@@ -96,12 +114,10 @@ function setFilters({ year, country }: TastingFilters) {
           class="mt-4 text-sm text-smoke lg:mt-6"
           aria-live="polite"
         >
-          {{ visible.length }} {{ visible.length === 1 ? 'tasting' : 'tastings' }}
+          {{ visible.length }}
+          {{ visible.length === 1 ? 'tasting' : 'tastings' }}
         </p>
-        <div
-          class="relative min-h-24"
-          :class="hasFilters ? 'mt-4' : 'mt-6'"
-        >
+        <div class="relative min-h-24" :class="hasFilters ? 'mt-4' : 'mt-6'">
           <TransitionGroup
             ref="grid"
             tag="div"
@@ -118,18 +134,19 @@ function setFilters({ year, country }: TastingFilters) {
             />
           </TransitionGroup>
           <Transition name="note">
-            <div
-              v-if="!visible.length"
-              class="absolute inset-x-0 top-0"
-            >
+            <div v-if="!visible.length" class="absolute inset-x-0 top-0">
               <EmptyNote>
-                {{ tastings.length ? 'No tastings match these filters.' : 'No tastings yet.' }}
+                {{
+                  tastings.length
+                    ? 'No tastings match these filters.'
+                    : 'No tastings yet.'
+                }}
               </EmptyNote>
               <button
-                v-if="active"
+                v-if="selectedCount"
                 type="button"
                 class="mt-2 text-sm text-sherry underline underline-offset-2 hover:no-underline"
-                @click="setFilters({})"
+                @click="setFilters({ years: [], countries: [] })"
               >
                 Clear filters
               </button>

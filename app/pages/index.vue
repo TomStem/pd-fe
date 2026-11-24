@@ -10,7 +10,7 @@ const showTastings = computed(() => home.value.tastings.length > 0 || !next.valu
 
 <template>
   <div>
-    <HeroSection>
+    <HeroSection image="/hero-glencoe.jpg">
       <p class="label-mono inline-block rounded-full border border-amber/60 px-3 py-1 text-amber">
         Whisky club
       </p>

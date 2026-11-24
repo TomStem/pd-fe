@@ -13,6 +13,7 @@ export const tastingSearchText = (t: TastingView) =>
 export const tastingFilterGroups: FilterGroup<TastingView>[] = [
   { key: 'year', label: 'Year', values: t => [{ value: formatYear(t.date), label: formatYear(t.date) }], compare: byValueDescending },
   { key: 'country', label: 'Country', values: t => tastingCountries(t).map(c => ({ value: c.slug, label: c.name })) },
+  { key: 'region', label: 'Region', values: t => t.regions.map(r => ({ value: r.slug, label: r.name })) },
 ];
 
 export const tastingSorts = [

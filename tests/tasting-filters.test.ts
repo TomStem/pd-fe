@@ -74,12 +74,12 @@ describe('tasting filters in the query', () => {
   const groups = groupsOf();
 
   it('parses comma-separated values, dropping what is not an option', () => {
-    expect(parseSelection({ year: '2024,1999,2025', country: 'scotland,atlantis' }, groups)).toEqual({ year: ['2024', '2025'], country: ['scotland'] });
+    expect(parseSelection({ year: '2024,1999,2025', country: 'scotland,atlantis' }, groups)).toEqual({ year: ['2024', '2025'], country: ['scotland'], region: [] });
   });
 
   it('round-trips through the query', () => {
     const selection = { year: ['2025'], country: ['scotland', 'japan'] };
-    expect(parseSelection(selectionToQuery(selection), groups)).toEqual(selection);
+    expect(parseSelection(selectionToQuery(selection), groups)).toEqual({ ...selection, region: [] });
   });
 });
 
@@ -104,5 +104,21 @@ describe('sorting tastings', () => {
   it('sorts by title with numbers in natural order and does not change the input', () => {
     expect(order('title')).toEqual(['t2', 't0', 't1', 't3']);
     expect(titled.map(t => t.slug)).toEqual(['t0', 't1', 't2', 't3']);
+  });
+});
+
+describe('tasting region group', () => {
+  it('lists the linked regions only, and country matching still includes them', () => {
+    expect(optionsOf('region')).toEqual([['islay', 1], ['kentucky', 1], ['speyside', 1]]);
+    expect(filterItems(tastings, tastingFilterGroups, { region: ['islay', 'kentucky'] }).map(t => t.slug)).toEqual(['a', 'c']);
+    expect(filterItems(tastings, tastingFilterGroups, { country: ['scotland'], region: ['kentucky'] })).toEqual([]);
+  });
+
+  it('is left out when fewer than two regions are linked', () => {
+    expect(optionsOf('region', {}, tastings.slice(1))).toBeUndefined();
+  });
+
+  it('takes counts within the other selections', () => {
+    expect(optionsOf('region', { country: ['scotland'] })).toEqual([['islay', 1], ['kentucky', 0], ['speyside', 1]]);
   });
 });

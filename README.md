@@ -123,7 +123,7 @@ De eerste foto is de omslagfoto. Reizen zonder `startDate` worden overgeslagen. 
 
 `npm run generate:static` maakt een volledig statische site in `.output/public`. Sleep die map (of een zip ervan) naar https://app.netlify.com/drop. Content en aankomend/archief liggen dan vast op het moment van genereren; bij elke wijziging opnieuw genereren en uploaden. Voor automatische updates vanuit Contentful gebruik je de deploy hierboven.
 
-Hybride rendering (`routeRules` in `nuxt.config.ts`): `/about`, `/contact` en `/countries` worden bij de build geprerenderd. Home, proeverijen, reizen, distilleries, landen/regio's en whisky's gebruiken in productie `swr` (stale-while-revalidate), omdat aankomend/archief uit de datum wordt afgeleid; in dev staat caching uit. De site blijft portable: Nitro kiest het juiste preset automatisch (Netlify) en voor Vercel/Cloudflare volstaat `NITRO_PRESET`.
+Rendering: alleen `/about` en `/contact` worden bij de build geprerenderd (`nitro.prerender` in `nuxt.config.ts`); ze tonen geen Contentful-content. Alle andere pagina's worden bij elk bezoek opnieuw opgebouwd en er is geen cache: bij elke paginaweergave wordt de content vers uit Contentful opgehaald (gelijktijdige bezoekers delen één ophaalactie, en alleen als Contentful faalt wordt de laatst bekende content getoond). Een gepubliceerde wijziging staat dus na een refresh online, binnen de eigen vertraging van de Contentful CDN (enkele seconden). De site blijft portable: Nitro kiest het juiste preset automatisch (Netlify, Vercel) en voor andere hosts volstaat `NITRO_PRESET`.
 
 ## Contentmodel
 

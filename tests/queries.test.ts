@@ -39,6 +39,7 @@ describe('queries', () => {
   it('picks the next tasting for the home page', () => {
     const home = getHome(store, now);
     expect(home.nextTasting?.slug).toBe('islay-night-rook-en-zeewind');
+    expect(home.latestTasting?.slug).toBe('turf-of-geen-turf');
     expect(home.tastings.map(t => t.slug)).toEqual(['islay-night-rook-en-zeewind', 'turf-of-geen-turf', 'raad-de-dram']);
     expect(home.trips.map(t => t.slug)).toEqual(['japan-van-yamazaki-tot-yoichi', 'islay-pelgrimage']);
   });
@@ -98,10 +99,11 @@ describe('queries', () => {
       .toEqual(['islay-night-rook-en-zeewind', 'turf-of-geen-turf', 'speyside-sherrybommen']);
   });
 
-  it('has no next tasting when none is upcoming, but still lists the newest three', () => {
+  it('has no next tasting when none is upcoming, falls back to the latest and still lists the newest three', () => {
     const past: ContentStore = { ...store, tastings: store.tastings.filter(t => !isUpcoming(t.date, now)) };
     const home = getHome(past, now);
     expect(home.nextTasting).toBeUndefined();
+    expect(home.latestTasting?.slug).toBe('turf-of-geen-turf');
     expect(home.tastings.map(t => t.slug)).toEqual(['turf-of-geen-turf', 'raad-de-dram', 'speyside-sherrybommen']);
   });
 

@@ -103,6 +103,7 @@ export function getHome(store: ContentStore, now = new Date()): HomeData {
   ]);
   return {
     nextTasting: tastings.filter(t => t.isUpcoming).at(-1),
+    latestTasting: tastings.find(t => !t.isUpcoming),
     tastings: tastings.slice(0, 3),
     trips: lookup.trips().slice(0, 2),
     countries: byName(store.countries.filter(c => withContent.has(c.slug))).map(lookup.countryView),

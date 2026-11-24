@@ -2,7 +2,8 @@
 const home = await useContentFetch<HomeData>('/api/home');
 usePageSeo({ title: 'Bad decisions. Good whisky.' });
 
-const next = computed(() => home.value.nextTasting);
+const next = computed(() => home.value.nextTasting ?? home.value.latestTasting);
+const nextLabel = computed(() => (home.value.nextTasting ? 'Next tasting' : 'Latest tasting'));
 const nextPlaces = computed(() => next.value && placeTag(tastingPlaces(next.value)));
 </script>
 
@@ -39,7 +40,7 @@ const nextPlaces = computed(() => next.value && placeTag(tastingPlaces(next.valu
           class="relative rounded-2xl border border-ember bg-cask p-5"
         >
           <p class="label-mono text-amber">
-            Next tasting · {{ formatDayMonth(next.date) }}
+            {{ nextLabel }} · {{ formatDayMonth(next.date) }}
           </p>
           <h2 class="mt-2 text-xl font-bold">
             <NuxtLink

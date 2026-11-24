@@ -51,6 +51,7 @@ export interface TripView extends Trip {
 
 export interface HomeData {
   nextTasting?: TastingView;
+  latestTasting?: TastingView;
   tastings: TastingView[];
   trips: TripView[];
   countries: CountryView[];

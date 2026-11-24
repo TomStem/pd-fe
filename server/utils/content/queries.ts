@@ -178,7 +178,7 @@ export function getWhiskyDetail(store: ContentStore, slug: string, now = new Dat
   return {
     whisky: view,
     reviews: store.reviews.filter(r => r.whiskySlug === slug),
-    siblings: store.whiskies.filter(w => w.distillerySlug === whisky.distillerySlug && w.slug !== slug).map(lookup.whiskyView).filter(isDefined),
+    siblings: store.whiskies.filter(w => w.distillerySlug === whisky.distillerySlug && w.slug !== slug).slice(0, 3).map(lookup.whiskyView).filter(isDefined),
     tastings: lookup.tastings().filter(t => t.whiskySlugs.includes(slug)),
   };
 }

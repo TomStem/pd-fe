@@ -141,6 +141,22 @@ describe('queries', () => {
     expect(getWhiskyDetail(store, 'nope', now)).toBeUndefined();
   });
 
+  it('lists at most three other whiskies of the distillery as siblings, and tastings newest first', () => {
+    const ardbeg = store.whiskies.find(w => w.slug === 'ardbeg-10')!;
+    const more = ['a', 'b', 'c', 'd'].map(slug => ({ ...ardbeg, slug: `ardbeg-${slug}`, name: `Ardbeg ${slug}` }));
+    const crowded: ContentStore = { ...store, whiskies: [...store.whiskies, ...more] };
+    expect(getWhiskyDetail(crowded, 'ardbeg-10', now)!.siblings.map(w => w.slug)).toEqual(['ardbeg-a', 'ardbeg-b', 'ardbeg-c']);
+    const pouredTwice: ContentStore = { ...store, tastings: store.tastings.map(t => ({ ...t, whiskySlugs: ['ardbeg-10'] })) };
+    const dates = getWhiskyDetail(pouredTwice, 'ardbeg-10', now)!.tastings.map(t => Date.parse(t.date));
+    expect(dates.length).toBeGreaterThan(1);
+    expect(dates).toEqual([...dates].sort((a, b) => b - a));
+  });
+
+  it('has no tastings for a whisky that was never poured', () => {
+    expect(getWhiskyDetail(store, 'buffalo-trace-bourbon', now)!.tastings.map(t => t.slug)).toEqual(['raad-de-dram']);
+    expect(getWhiskyDetail({ ...store, tastings: [] }, 'ardbeg-10', now)!.tastings).toEqual([]);
+  });
+
   it('skips entities with dangling references instead of failing', () => {
     const broken: ContentStore = { ...store, distilleries: [{ ...store.distilleries[0]!, regionSlug: 'nowhere' }] };
     expect(getTrips(broken)[0]!.distilleries).toEqual([]);

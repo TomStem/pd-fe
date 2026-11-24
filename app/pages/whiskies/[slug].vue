@@ -161,7 +161,6 @@ usePageSeo({
     </section>
 
     <section
-      v-if="data.tastings.length"
       class="mt-12"
       aria-labelledby="tastings-heading"
     >
@@ -171,13 +170,22 @@ usePageSeo({
       >
         Poured at
       </h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="data.tastings.length"
+        class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <TastingCard
           v-for="tasting in data.tastings"
           :key="tasting.slug"
           :tasting="tasting"
         />
       </div>
+      <EmptyNote
+        v-else
+        class="mt-3"
+      >
+        Not poured at a tasting yet.
+      </EmptyNote>
     </section>
 
     <section

@@ -29,18 +29,8 @@ export default defineNuxtConfig({
     },
   },
 
-  // Pages that show Contentful content are rendered on every request (no ISR/SWR) so published changes show up on the next
-  // refresh; the short in-memory content cache in server/utils/content.ts is the only delay. About and Contact are static.
-  routeRules: {
-    '/about': { prerender: true },
-    '/contact': { prerender: true },
-    '/api/**': { headers: { 'cache-control': 'no-store' } },
-    '/proeverijen/**': { redirect: { to: '/tastings/**', statusCode: 301 } },
-    '/reizen/**': { redirect: { to: '/trips/**', statusCode: 301 } },
-    '/landen/**': { redirect: { to: '/countries/**', statusCode: 301 } },
-    '/whiskys/**': { redirect: { to: '/whiskies/**', statusCode: 301 } },
-    '/over-ons': { redirect: { to: '/about', statusCode: 301 } },
-  },
+  // Pages that show Contentful content are rendered on every request and nothing is cached, so a published change shows
+  // up on the next refresh. About and Contact have no Contentful content and are prerendered (see nitro.prerender).
   compatibilityDate: '2026-11-01',
 
   nitro: {

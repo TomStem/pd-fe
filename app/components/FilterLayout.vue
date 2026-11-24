@@ -34,7 +34,7 @@ const selectedCount = computed(() => selectedTotal(props.selection));
         />
       </details>
       <aside class="sticky top-24 mt-6 hidden lg:block">
-        <div class="card p-5">
+        <div class="card max-h-[calc(100vh-7.5rem)] overflow-y-auto p-5">
           <h2 class="text-lg font-bold">
             Filter
           </h2>

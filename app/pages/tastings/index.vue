@@ -37,7 +37,7 @@ const boxOf = (card: HTMLElement) => ({
 /** Remembers where the cards are when the route changes, before the grid re-renders, because leaving cards are only noticed after the grid has reflowed. */
 function rememberCardBoxes() {
   boxes = new WeakMap(
-    [...(grid.value?.$el.children ?? [])].map((card) => [
+    [...(grid.value?.$el.children ?? [])].map(card => [
       card,
       boxOf(card as HTMLElement),
     ]),
@@ -84,9 +84,10 @@ const setFilters = (next: TastingFilters) =>
             class="flex cursor-pointer items-center justify-between p-4 font-semibold"
           >
             Filter
-            <span v-if="selectedCount" class="text-sm font-normal text-sherry"
-              >{{ selectedCount }} selected</span
-            >
+            <span
+              v-if="selectedCount"
+              class="text-sm font-normal text-sherry"
+            >{{ selectedCount }} selected</span>
           </summary>
           <TastingFilters
             :facets="facets"
@@ -97,7 +98,9 @@ const setFilters = (next: TastingFilters) =>
         </details>
         <aside class="sticky top-24 mt-6 hidden lg:block">
           <div class="card p-5">
-            <h2 class="text-lg font-bold">Filter</h2>
+            <h2 class="text-lg font-bold">
+              Filter
+            </h2>
             <TastingFilters
               :facets="facets"
               :filters="filters"
@@ -117,7 +120,10 @@ const setFilters = (next: TastingFilters) =>
           {{ visible.length }}
           {{ visible.length === 1 ? 'tasting' : 'tastings' }}
         </p>
-        <div class="relative min-h-24" :class="hasFilters ? 'mt-4' : 'mt-6'">
+        <div
+          class="relative min-h-24"
+          :class="hasFilters ? 'mt-4' : 'mt-6'"
+        >
           <TransitionGroup
             ref="grid"
             tag="div"
@@ -134,7 +140,10 @@ const setFilters = (next: TastingFilters) =>
             />
           </TransitionGroup>
           <Transition name="note">
-            <div v-if="!visible.length" class="absolute inset-x-0 top-0">
+            <div
+              v-if="!visible.length"
+              class="absolute inset-x-0 top-0"
+            >
               <EmptyNote>
                 {{
                   tastings.length

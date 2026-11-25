@@ -88,7 +88,7 @@ usePageSeo({
         :key="cask"
         class="dram"
       >
-        {{ cask }}
+        {{ caskLabel(cask) }}
       </li>
     </ul>
     <EmptyNote
@@ -102,9 +102,12 @@ usePageSeo({
       :src="whisky.image"
       :alt="whisky.name"
       :slugs="[whisky.regions[0]?.slug, whisky.countries[0]?.slug]"
-      height-class="aspect-[8/3]"
+      height-class="aspect-[4/3] md:aspect-[16/9]"
+      placeholder="whisky"
+      priority
+      object-class="object-[50%_10%]"
       :image-width="1200"
-      :image-height="450"
+      :image-height="675"
       sizes="sm:100vw md:100vw lg:1100px"
       class="mt-6 rounded-card"
     />

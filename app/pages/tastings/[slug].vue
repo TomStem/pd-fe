@@ -93,6 +93,7 @@ useHead({
         :image-width="1200"
         :image-height="450"
         sizes="sm:100vw md:100vw lg:640px"
+        priority
         class="mt-6 rounded-card"
       >
         <template #placeholder>
@@ -169,15 +170,14 @@ useHead({
         v-if="tasting.photos.length"
         class="mt-10 grid gap-3 sm:grid-cols-2"
       >
-        <NuxtImg
+        <BlurImage
           v-for="photo in tasting.photos"
           :key="photo"
           :src="photo"
           :alt="`Photo of ${tasting.title}`"
-          width="800"
-          height="600"
-          loading="lazy"
-          class="rounded-card"
+          :width="800"
+          :height="600"
+          class="aspect-[4/3] rounded-card"
         />
       </div>
       <EmptyNote

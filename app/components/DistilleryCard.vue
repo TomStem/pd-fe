@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ distillery: DistilleryView }>();
+const props = defineProps<{ distillery: DistilleryView; priority?: boolean }>();
 
 const place = computed(() => [props.distillery.region?.name, props.distillery.country.name].filter(Boolean).join(' · '));
 const facts = computed(() => [props.distillery.town, props.distillery.founded].filter(Boolean));
@@ -11,7 +11,9 @@ const facts = computed(() => [props.distillery.town, props.distillery.founded].f
       :src="distillery.image"
       :alt="distillery.name"
       :slugs="[distillery.region?.slug, distillery.country.slug]"
+      :priority="priority"
       height-class="aspect-[8/3]"
+      placeholder="distillery"
       :image-width="1200"
       :image-height="450"
     />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ trip: TripView }>();
+const props = defineProps<{ trip: TripView; priority?: boolean }>();
 
 const primaryRegion = computed(() => props.trip.regions[0]);
 const tag = computed(() => [primaryRegion.value?.name, `${tripLength(props.trip.startDate, props.trip.endDate)} dagen`].filter(Boolean).join(' · '));
@@ -12,6 +12,7 @@ const tag = computed(() => [primaryRegion.value?.name, `${tripLength(props.trip.
       :alt="trip.title"
       :slugs="[primaryRegion?.slug, primaryRegion?.country.slug]"
       :tags="[tag]"
+      :priority="priority"
       height-class="h-40"
     />
     <div class="flex flex-1 flex-col p-4">

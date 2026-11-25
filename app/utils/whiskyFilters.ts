@@ -1,4 +1,5 @@
 import { byFixedOrder, facetValue, texts, type FacetValue, type FilterGroup } from './facetFilters';
+import { caskLabel } from './whiskyLabels';
 
 const AGE_BUCKETS: FacetValue[] = [
   { value: 'nas', label: 'NAS' },
@@ -47,7 +48,7 @@ export const whiskyFilterGroups: FilterGroup<WhiskyView>[] = [
   { key: 'country', label: 'Country', values: w => w.countries.map(c => ({ value: c.slug, label: c.name })) },
   { key: 'region', label: 'Region', values: w => w.regions.map(r => ({ value: r.slug, label: r.name })) },
   { key: 'age', label: 'Age', values: w => optional(ageBucket(w)), compare: byFixedOrder(AGE_BUCKETS.map(b => b.value)) },
-  { key: 'cask', label: 'Cask', values: w => w.casks.filter(c => facetValue(c)).map(c => ({ value: facetValue(c), label: c })) },
+  { key: 'cask', label: 'Cask', values: w => w.casks.map(caskLabel).filter(label => facetValue(label)).map(label => ({ value: facetValue(label), label })) },
   { key: 'rating', label: 'Rating', values: w => ratingBuckets(w), compare: byFixedOrder(RATING_BUCKETS.map(b => b.value)) },
 ];
 

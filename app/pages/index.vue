@@ -47,22 +47,40 @@ const showTastings = computed(
           v-if="next"
           class="relative rounded-2xl border border-ember bg-cask p-5"
         >
-          <p class="label-mono text-amber">
-            {{ nextLabel }} · {{ formatDayMonth(next.date) }}
-          </p>
-          <h2 class="mt-2 text-xl font-bold">
-            <NuxtLink
-              :to="`/tastings/${next.slug}`"
-              class="stretched-link"
+          <div class="flex gap-4">
+            <CoverImage
+              :src="next.image"
+              :alt="next.title"
+              height-class="size-24"
+              class="shrink-0 rounded-xl"
+              :image-width="192"
+              :image-height="192"
+              sizes="96px"
+              priority
             >
-              {{ next.title }}
-            </NuxtLink>
-          </h2>
-          <p class="mt-1 text-sm text-ash">
-            {{
-              [next.location, formatTime(next.date)].filter(Boolean).join(' · ')
-            }}
-          </p>
+              <template #placeholder>
+                <TastingPlaceholder :slug="next.slug" />
+              </template>
+            </CoverImage>
+            <div class="min-w-0">
+              <p class="label-mono text-amber">
+                {{ nextLabel }} · {{ formatDayMonth(next.date) }}
+              </p>
+              <h2 class="mt-2 text-xl font-bold">
+                <NuxtLink
+                  :to="`/tastings/${next.slug}`"
+                  class="stretched-link"
+                >
+                  {{ next.title }}
+                </NuxtLink>
+              </h2>
+              <p class="mt-1 text-sm text-ash">
+                {{
+                  [next.location, formatTime(next.date)].filter(Boolean).join(' · ')
+                }}
+              </p>
+            </div>
+          </div>
           <p
             v-if="nextPlaces"
             class="mt-3 text-sm text-amber"
@@ -85,9 +103,10 @@ const showTastings = computed(
         class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         <TastingCard
-          v-for="tasting in home.tastings"
+          v-for="(tasting, index) in home.tastings"
           :key="tasting.slug"
           :tasting="tasting"
+          :priority="index < 3"
         />
       </div>
       <p
@@ -121,34 +140,21 @@ const showTastings = computed(
       </EmptyNote>
     </SectionBlock>
 
-    <SectionBlock title="Explore by country">
-      <ul
+    <SectionBlock
+      title="Explore by country"
+      to="/countries"
+      link-label="All countries"
+    >
+      <div
         v-if="home.countries.length"
-        class="mt-5 flex flex-wrap gap-2"
+        class="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4"
       >
-        <li
+        <CountryCard
           v-for="country in home.countries"
           :key="country.slug"
-        >
-          <NuxtLink
-            :to="`/countries/${country.slug}`"
-            class="pill hover:border-sherry"
-          >
-            <span
-              v-if="country.flag"
-              aria-hidden="true"
-            >{{
-              country.flag
-            }}</span>
-            {{ country.name }}
-            <b
-              v-if="country.regionCount"
-              class="font-semibold text-sherry"
-            >{{ country.regionCount }}
-              {{ country.regionCount === 1 ? 'region' : 'regions' }}</b>
-          </NuxtLink>
-        </li>
-      </ul>
+          :country="country"
+        />
+      </div>
       <EmptyNote
         v-else
         class="mt-4"
@@ -156,5 +162,7 @@ const showTastings = computed(
         No countries with content yet.
       </EmptyNote>
     </SectionBlock>
+
+    <StatTiles :stats="home.stats" />
   </div>
 </template>

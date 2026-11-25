@@ -64,6 +64,7 @@ const filters = useFacetFilters(sorted, tastingFilterGroups, tastingSearchText);
               v-for="(tasting, index) in filters.visible"
               :key="tasting.slug"
               :tasting="tasting"
+              :priority="index < 3"
               :style="{ '--i': Math.min(index, 8) }"
             />
           </AnimatedGrid>

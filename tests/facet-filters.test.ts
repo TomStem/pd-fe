@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  activeChips, byFixedOrder, byLabel, byValueDescending, facetGroups, facetValue, filterItems, normalizeText, parseSelection, searchItems, selectedTotal, selectionToQuery, texts, toggleValue,
+  activeChips, byFixedOrder, COLLAPSED_OPTION_LIMIT, visibleOptions, byLabel, byValueDescending, facetGroups, facetValue, filterItems, normalizeText, parseSelection, searchItems, selectedTotal, selectionToQuery, texts, toggleValue,
   type FilterGroup,
 } from '../app/utils/facetFilters';
 
@@ -157,5 +157,22 @@ describe('active chips', () => {
   it('has no chips when nothing is active', () => {
     expect(activeChips(shown, { colour: [], tag: [] }, '')).toEqual([]);
     expect(activeChips(shown, {}, '')).toEqual([]);
+  });
+});
+
+describe('visibleOptions', () => {
+  const opts = Array.from({ length: 12 }, (_, i) => ({ value: `v${i}`, label: `L${i}`, count: i }));
+
+  it('shows everything when short or expanded', () => {
+    expect(visibleOptions(opts.slice(0, 8))).toHaveLength(8);
+    expect(visibleOptions(opts, [], true)).toHaveLength(12);
+  });
+
+  it('collapses to the limit, keeping order', () => {
+    expect(visibleOptions(opts).map(o => o.value)).toEqual(opts.slice(0, COLLAPSED_OPTION_LIMIT).map(o => o.value));
+  });
+
+  it('always keeps selected options visible in their place', () => {
+    expect(visibleOptions(opts, ['v10', 'v2']).map(o => o.value)).toEqual([...opts.slice(0, 8).map(o => o.value), 'v10']);
   });
 });

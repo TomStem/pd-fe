@@ -8,7 +8,13 @@ const props = withDefaults(defineProps<{
   imageWidth?: number;
   imageHeight?: number;
   sizes?: string;
-}>(), { alt: '', heightClass: 'h-32', src: undefined, slugs: () => [], tags: () => [], imageWidth: 800, imageHeight: 450, sizes: 'sm:100vw md:50vw lg:400px' });
+  /** Silhouette of the placeholder when there is no image. */
+  placeholder?: 'whisky' | 'distillery';
+  /** Tailwind object-position class for the image; centred by default. */
+  objectClass?: string;
+  /** Load right away with high fetch priority; for images above the fold. */
+  priority?: boolean;
+}>(), { placeholder: undefined, priority: false, objectClass: 'object-center', alt: '', heightClass: 'h-32', src: undefined, slugs: () => [], tags: () => [], imageWidth: 800, imageHeight: 450, sizes: 'sm:100vw md:50vw lg:400px' });
 
 const visibleTags = computed(() => props.tags.filter(Boolean));
 </script>
@@ -18,21 +24,25 @@ const visibleTags = computed(() => props.tags.filter(Boolean));
     class="relative overflow-hidden"
     :class="heightClass"
   >
-    <NuxtImg
+    <BlurImage
       v-if="src"
       :src="src"
       :alt="alt"
       :width="imageWidth"
       :height="imageHeight"
       :sizes="sizes"
-      loading="lazy"
-      class="size-full object-cover"
+      :object-class="objectClass"
+      :priority="priority"
+      class="size-full"
     />
     <slot
       v-else
       name="placeholder"
     >
-      <PlaceholderImage :slugs="slugs" />
+      <PlaceholderImage
+        :slugs="slugs"
+        :variant="placeholder"
+      />
     </slot>
     <div
       v-if="visibleTags.length"

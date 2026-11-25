@@ -68,6 +68,8 @@ export default defineNuxtConfig({
 
   image: {
     domains: ['images.ctfassets.net'],
+    format: ['webp'],
+    quality: 75,
   },
 
   sitemap: { sources: ['/api/sitemap-urls'] },

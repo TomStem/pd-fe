@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ country: CountryView }>();
+const props = defineProps<{ country: CountryView; priority?: boolean }>();
 
 const facts = computed(() => [
   props.country.regionCount && `${props.country.regionCount} ${props.country.regionCount === 1 ? 'region' : 'regions'}`,
@@ -13,6 +13,7 @@ const facts = computed(() => [
       :src="country.image"
       :alt="country.name"
       :slugs="[country.slug]"
+      :priority="priority"
       height-class="aspect-[8/3]"
       :image-width="1200"
       :image-height="450"

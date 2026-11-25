@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { facetGroups, filterItems, parseSelection, searchItems } from '../app/utils/facetFilters';
 import { ageBucket, ratingBuckets, sortWhiskies, whiskyFilterGroups, whiskySearchText, whiskySorts } from '../app/utils/whiskyFilters';
-import { moreFromTitle, whiskyLabel } from '../app/utils/whiskyLabels';
+import { caskLabel, moreFromTitle, whiskyLabel } from '../app/utils/whiskyLabels';
 
 const whisky = (name: string, extra: Partial<WhiskyView> = {}) =>
   ({
@@ -13,8 +13,8 @@ const islay = { slug: 'islay', name: 'Islay', country: scotland };
 
 const whiskies = [
   whisky('Ardbeg 5', { age: 5, abv: 40, distilleries: [{ slug: 'ardbeg', name: 'Ardbeg' }], countries: [scotland], regions: [islay], casks: ['Bourbon', 'Oloroso Sherry'], averageRating: 4.5, reviewCount: 2 }),
-  whisky('Jura 10', { age: 10, abv: 43, distilleries: [{ slug: 'jura', name: 'Jura' }], countries: [scotland], casks: ['bourbon'], averageRating: 3.2, reviewCount: 1 }),
-  whisky('Oban 14', { age: 14, abv: 43, distilleries: [{ slug: 'oban', name: 'Oban' }], casks: ['Hogshead'] }),
+  whisky('Jura 10', { age: 10, abv: 43, distilleries: [{ slug: 'jura', name: 'Jura' }], countries: [scotland], casks: ['bourbon', 'american oak'], averageRating: 3.2, reviewCount: 1 }),
+  whisky('Oban 14', { age: 14, abv: 43, distilleries: [{ slug: 'oban', name: 'Oban' }], casks: ['Hogshead', 'American Oak'] }),
   whisky('Old 21', { age: 21, abv: 46, casks: [] }),
   whisky('Young NAS', { isNas: true, abv: 46.3, casks: ['Bourbon'] }),
   whisky('Mystery'),
@@ -52,7 +52,7 @@ describe('rating buckets', () => {
 
 describe('whisky filter groups', () => {
   it('merges casks that differ only in case and matches any selected cask', () => {
-    expect(options('cask')).toEqual([['Bourbon', 3], ['Hogshead', 1], ['Oloroso Sherry', 1]]);
+    expect(options('cask')).toEqual([['American oak', 2], ['Bourbon', 3], ['Hogshead', 1], ['Oloroso sherry', 1]]);
     expect(names({ cask: ['oloroso-sherry', 'hogshead'] })).toEqual(['Ardbeg 5', 'Oban 14']);
   });
 
@@ -169,5 +169,27 @@ describe('blends', () => {
     expect(moreFromTitle(mixed[1]!, [{ brand: undefined }])).toBe('More from these distilleries');
     expect(moreFromTitle(mixed[0]!, [{ brand: undefined }])).toBe('More from Ardbeg');
     expect(moreFromTitle({ brand: 'Salt & Oak', distilleries: [ardbeg] }, [{ brand: undefined }])).toBe('More from Ardbeg');
+  });
+});
+
+describe('caskLabel', () => {
+  it('uppercases only the first letter', () => {
+    expect(caskLabel('beer')).toBe('Beer');
+    expect(caskLabel('American oak')).toBe('American oak');
+    expect(caskLabel('oloroso sherry (finish)')).toBe('Oloroso sherry (finish)');
+    expect(caskLabel('')).toBe('');
+  });
+
+  it('uses sentence case but keeps all-caps words', () => {
+    expect(caskLabel('American Oak')).toBe('American oak');
+    expect(caskLabel('Oloroso Sherry')).toBe('Oloroso sherry');
+    expect(caskLabel('PX sherry')).toBe('PX sherry');
+    expect(caskLabel('Sherry VS finish')).toBe('Sherry VS finish');
+  });
+
+  it('merges lower and upper case casks into one option labelled normalised', () => {
+    const items = [whisky('A', { casks: ['sherry'] }), whisky('B', { casks: ['Sherry'] }), whisky('C', { casks: ['beer'] })];
+    const cask = facetGroups(items, whiskyFilterGroups).find(g => g.key === 'cask')!;
+    expect(cask.options.map(o => [o.label, o.count])).toEqual([['Beer', 1], ['Sherry', 2]]);
   });
 });

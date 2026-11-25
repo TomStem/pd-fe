@@ -17,9 +17,10 @@ usePageSeo({ title: 'Whisky trips', description: 'Reports of the multi-day whisk
         class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         <TripCard
-          v-for="trip in trips"
+          v-for="(trip, index) in trips"
           :key="trip.slug"
           :trip="trip"
+          :priority="index < 3"
         />
       </div>
       <EmptyNote

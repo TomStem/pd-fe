@@ -79,7 +79,7 @@
   }
 
   .btn-ghost {
-    @apply border border-ember text-malt hover:bg-cask;
+    @apply border border-malt/60 bg-malt/15 text-malt backdrop-blur-sm hover:border-amber hover:bg-malt/25;
   }
 
   .btn-ghost-light {
@@ -129,6 +129,33 @@
   .rich-text ol { @apply list-decimal pl-5; }
   .rich-text a { @apply text-sherry underline underline-offset-2; }
   .rich-text blockquote { @apply border-l-4 border-amber pl-4 italic; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .filter-pill-in {
+    animation: pill-in 0.25s ease-out;
+  }
+}
+
+.img-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.07) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: img-shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-shimmer::after { animation: none; }
+}
+
+@keyframes img-shimmer {
+  to { transform: translateX(100%); }
+}
+
+@keyframes pill-in {
+  from { opacity: 0; transform: scale(0.94); }
 }
 
 .card-list {

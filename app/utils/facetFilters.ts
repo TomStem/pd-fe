@@ -118,3 +118,12 @@ export function toggleValue(selection: FilterSelection, key: string, value: stri
   const selected = selection[key] ?? [];
   return { ...selection, [key]: selected.includes(value) ? selected.filter(v => v !== value) : [...selected, value] };
 }
+
+/** Option groups longer than this are collapsed behind "Show more". */
+export const COLLAPSED_OPTION_LIMIT = 8;
+
+/** The options to show: all when expanded or short, else the first few plus any selected option beyond them; order is kept. */
+export function visibleOptions(options: FacetOption[], selected: string[] = [], expanded = false, limit = COLLAPSED_OPTION_LIMIT): FacetOption[] {
+  if (expanded || options.length <= limit) return options;
+  return options.filter((option, index) => index < limit || selected.includes(option.value));
+}

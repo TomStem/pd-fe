@@ -30,20 +30,26 @@ usePageSeo({
 
       <div class="mt-10 grid gap-4 sm:grid-cols-3">
         <div class="rounded-card border border-line bg-paper p-5">
-          <h2 class="text-lg font-bold">Tastings</h2>
+          <h2 class="text-lg font-bold">
+            Tastings
+          </h2>
           <p class="mt-1 text-sm text-smoke">
             Themed evenings with four or five whiskies, for beginners and
             connoisseurs.
           </p>
         </div>
         <div class="rounded-card border border-line bg-paper p-5">
-          <h2 class="text-lg font-bold">Trips</h2>
+          <h2 class="text-lg font-bold">
+            Trips
+          </h2>
           <p class="mt-1 text-sm text-smoke">
             Reports of our multi-day trips to distilleries in Scotland.
           </p>
         </div>
         <div class="rounded-card border border-line bg-paper p-5">
-          <h2 class="text-lg font-bold">Sharing knowledge</h2>
+          <h2 class="text-lg font-bold">
+            Sharing knowledge
+          </h2>
           <p class="mt-1 text-sm text-smoke">
             Countries, regions, distilleries and bottles: everything with
             tasting notes in one place.
@@ -57,7 +63,7 @@ usePageSeo({
           href="https://www.instagram.com/pourdecisionswhiskyclub/"
           target="_blank"
           rel="noopener"
-          >Get in touch
+        >Get in touch
         </a>
       </div>
     </div>

@@ -11,7 +11,7 @@ defineProps<{ region: RegionView }>();
       height-class="aspect-[8/3]"
       :image-width="1200"
       :image-height="450"
-      :tags="[`${region.distilleryCount} ${region.distilleryCount === 1 ? 'distillery' : 'distilleries'}`]"
+      :tags="[region.distilleryCount > 0 ? `${region.distilleryCount} ${region.distilleryCount === 1 ? 'distillery' : 'distilleries'}` : undefined]"
     />
     <div class="flex flex-1 flex-col p-4">
       <h3 class="text-lg font-bold">

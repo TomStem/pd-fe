@@ -44,6 +44,7 @@ const filters = useFacetFilters(sorted, whiskyFilterGroups, whiskySearchText);
             v-for="(whisky, index) in filters.visible"
             :key="whisky.slug"
             :whisky="whisky"
+            :priority="index < 3"
             :style="{ '--i': Math.min(index, 8) }"
           />
         </AnimatedGrid>

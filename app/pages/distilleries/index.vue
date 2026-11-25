@@ -35,6 +35,7 @@ const filters = useFacetFilters(distilleries, distilleryFilterGroups, distillery
             v-for="(distillery, index) in filters.visible"
             :key="distillery.slug"
             :distillery="distillery"
+            :priority="index < 3"
             :style="{ '--i': Math.min(index, 8) }"
           />
         </AnimatedGrid>

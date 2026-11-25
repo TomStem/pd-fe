@@ -45,15 +45,15 @@ usePageSeo({
         No description available yet.
       </EmptyNote>
 
-      <NuxtImg
+      <BlurImage
         v-if="distillery.image"
         :src="distillery.image"
         :alt="`Photo of ${distillery.name}`"
-        width="1200"
-        height="450"
+        :width="1200"
+        :height="450"
         sizes="sm:100vw md:100vw lg:1100px"
-        loading="lazy"
-        class="mt-8 aspect-[8/3] w-full rounded-card object-cover"
+        priority
+        class="mt-8 aspect-[8/3] w-full rounded-card"
       />
 
       <section

@@ -28,6 +28,7 @@ usePageSeo({
       :image-width="1200"
       :image-height="450"
       sizes="sm:100vw md:100vw lg:1100px"
+      priority
       class="mt-6 rounded-card"
     />
     <h1 class="mt-6 text-4xl font-bold">

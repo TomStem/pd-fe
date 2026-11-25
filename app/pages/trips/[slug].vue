@@ -62,15 +62,14 @@ usePageSeo({
         v-if="trip.photos.length"
         class="mt-10 grid gap-3 sm:grid-cols-2"
       >
-        <NuxtImg
+        <BlurImage
           v-for="(photo, index) in trip.photos"
           :key="index"
           :src="photo"
           :alt="`Photo of ${trip.title}`"
-          width="800"
-          height="600"
-          loading="lazy"
-          class="rounded-card"
+          :width="800"
+          :height="600"
+          class="aspect-[4/3] rounded-card"
         />
       </div>
 

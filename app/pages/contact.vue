@@ -17,15 +17,16 @@ usePageSeo({
       <dl
         class="mt-4 grid max-w-xl grid-cols-[auto_1fr] gap-x-6 gap-y-3 rounded-card border border-line bg-paper p-6"
       >
-        <dt class="text-smoke">Instagram</dt>
+        <dt class="text-smoke">
+          Instagram
+        </dt>
         <dd>
           <a
             href="https://www.instagram.com/pourdecisionswhiskyclub/"
             target="_blank"
             rel="noopener"
             class="text-sherry hover:underline"
-            >@pourdecisionswhiskyclub</a
-          >
+          >@pourdecisionswhiskyclub</a>
         </dd>
       </dl>
     </div>

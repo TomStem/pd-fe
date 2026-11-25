@@ -56,6 +56,17 @@ describe('whisky filter groups', () => {
     expect(names({ cask: ['oloroso-sherry', 'hogshead'] })).toEqual(['Ardbeg 5', 'Oban 14']);
   });
 
+  it('drops a trailing "distillery" from filter labels but keeps the slug and the rest of the name', () => {
+    const named = [
+      whisky('A', { distilleries: [{ slug: 'ardbeg-distillery', name: 'Ardbeg distillery' }] }),
+      whisky('B', { distilleries: [{ slug: 'distillery-one', name: 'Distillery One' }, { slug: 'suntory-yamazaki-distillery', name: 'Suntory Yamazaki Distillery' }] }),
+    ];
+    const group = facetGroups(named, whiskyFilterGroups).find(g => g.key === 'distillery')!;
+    expect(group.options.map(o => [o.value, o.label])).toEqual([
+      ['ardbeg-distillery', 'Ardbeg'], ['distillery-one', 'Distillery One'], ['suntory-yamazaki-distillery', 'Suntory Yamazaki'],
+    ]);
+  });
+
   it('derives distillery, country and region and leaves out groups with one option', () => {
     expect(options('distillery')).toEqual([['Ardbeg', 1], ['Distillery One', 3], ['Jura', 1], ['Oban', 1]]);
     expect(options('country')).toBeUndefined();

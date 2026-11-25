@@ -95,7 +95,7 @@
   }
 
   .filter-pill {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1 text-sm transition-colors hover:border-sherry aria-pressed:border-oak aria-pressed:bg-oak aria-pressed:text-white;
+    @apply inline-flex max-w-full items-center gap-1.5 rounded-2xl border border-line bg-paper px-3 py-1 text-left text-sm transition-colors hover:border-sherry aria-pressed:border-oak aria-pressed:bg-oak aria-pressed:text-white;
   }
 
   .dram {

@@ -24,7 +24,7 @@ const emit = defineEmits<{ toggle: [key: string, value: string]; clear: [] }>();
           :aria-pressed="selection[group.key]?.includes(option.value) ?? false"
           @click="emit('toggle', group.key, option.value)"
         >
-          {{ option.label }} <span class="opacity-60">{{ option.count }}</span>
+          {{ option.label }} <span class="shrink-0 opacity-60">{{ option.count }}</span>
         </button>
       </div>
     </div>

@@ -43,7 +43,7 @@ const TYPES: FacetValue[] = [
 export const whiskyFilterGroups: FilterGroup<WhiskyView>[] = [
   { key: 'type', label: 'Type', values: w => [bucket(TYPES, w.isBlend ? 'blend' : 'single-distillery')], compare: byFixedOrder(TYPES.map(t => t.value)) },
   { key: 'brand', label: 'Brand', values: w => optional(w.brand).filter(b => facetValue(b)).map(b => ({ value: facetValue(b), label: b })) },
-  { key: 'distillery', label: 'Distillery', values: w => w.distilleries.map(d => ({ value: d.slug, label: d.name })) },
+  { key: 'distillery', label: 'Distillery', values: w => w.distilleries.map(d => ({ value: d.slug, label: d.name.replace(/\s+distillery$/i, '') })) },
   { key: 'country', label: 'Country', values: w => w.countries.map(c => ({ value: c.slug, label: c.name })) },
   { key: 'region', label: 'Region', values: w => w.regions.map(r => ({ value: r.slug, label: r.name })) },
   { key: 'age', label: 'Age', values: w => optional(ageBucket(w)), compare: byFixedOrder(AGE_BUCKETS.map(b => b.value)) },

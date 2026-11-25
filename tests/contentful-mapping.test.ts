@@ -154,13 +154,10 @@ describe('mapStore', () => {
     expect(store.reviews.map(r => [r.title, r.whiskySlug])).toEqual([['Mooi', 'fake-10-years'], ['Goed', 'fake-10-years']]);
   });
 
-  it('merges the distilleries and the legacy distillery of a whisky into one list without duplicates or unresolved links', () => {
+  it('reads the distillery of a whisky from the single distillery field and skips an unresolved link', () => {
     const whiskies = (fields: Record<string, unknown>) => mapStore({ ...raw, whiskies: [entry('w9', { name: 'Mix', ...fields })] }).whiskies[0]!;
     expect(whiskies({ distillery: link('d1') }).distillerySlugs).toEqual(['fake-distillery']);
-    expect(whiskies({ distilleries: [link('d2'), link('d1')] }).distillerySlugs).toEqual(['regionless', 'fake-distillery']);
-    expect(whiskies({ distilleries: [link('d2'), link('d1')], distillery: link('d1') }).distillerySlugs).toEqual(['regionless', 'fake-distillery']);
-    expect(whiskies({ distilleries: [link('d2')], distillery: link('d1') }).distillerySlugs).toEqual(['regionless', 'fake-distillery']);
-    expect(whiskies({ distilleries: [link('gone'), link('d1')], distillery: link('gone') }).distillerySlugs).toEqual(['fake-distillery']);
+    expect(whiskies({ distillery: link('gone') }).distillerySlugs).toEqual([]);
     expect(whiskies({}).distillerySlugs).toEqual([]);
   });
 
@@ -233,7 +230,10 @@ describe('queries on mapped content', () => {
   });
 
   it('shows a whisky of distilleries from several countries in each of them', () => {
-    const blend = mapStore({ ...raw, whiskies: [entry('w9', { name: 'Mix', distilleries: [link('d1'), link('d2')] })] });
+    const blend = {
+      ...mapStore({ ...raw, whiskies: [entry('w9', { name: 'Mix', distillery: link('d1') })] }),
+    };
+    blend.whiskies = blend.whiskies.map(w => ({ ...w, distillerySlugs: ['fake-distillery', 'regionless'] }));
     expect(getWhiskyDetail(blend, 'mix', now)!.whisky.countries.map(c => c.slug)).toEqual(['scotland', 'united-states']);
     expect(getHome(blend, now).countries.map(c => c.slug)).toEqual(['scotland', 'united-states']);
   });

@@ -147,7 +147,7 @@ const mapWhisky = (f: Fields, slug: string, slugOf: SlugOf): Whisky => ({
   ...seo(f),
   slug,
   name: nameOf(f)!,
-  distillerySlugs: [...new Set([...slugsOf(f.distilleries, slugOf), slugOf(f.distillery)].filter(isDefined))],
+  distillerySlugs: [slugOf(f.distillery)].filter(isDefined),
   brand: optionalText(f.brand),
   countrySlug: slugOf(f.country),
   regionSlug: slugOf(f.region),

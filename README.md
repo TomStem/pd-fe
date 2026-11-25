@@ -60,7 +60,7 @@ Content type id's en velden (`*` = verplicht in Contentful):
 | `countries` | `name`*, `description` (rich text) |
 | `regions` | `regionName`, `country`* (→ countries), `description` (rich text) |
 | `distilleries` | `name`*, `slug`*, `image`* (asset), `location` (Location), `country`* (→ countries), `region` (→ regions) |
-| `whiskies` | `name`*, `slug`*, `image` (asset), `age`, `isNas`*, `alcoholPercentage`*, `notes` (rich text), `cask`* (lijst), `distilleries` (→ distilleries, many), `brand` (Short text), `country` (→ countries), `region` (→ regions), `distillery` (→ distilleries, oud) |
+| `whiskies` | `name`*, `slug`*, `image` (asset), `age`, `isNas`*, `alcoholPercentage`*, `notes` (rich text), `cask`* (lijst), `distillery` (→ distilleries), `brand` (Short text), `country` (→ countries), `region` (→ regions) |
 | `tastings` | `name`*, `date`* (datum met tijd), `description` (rich text), `images` (assets), `whiskies` (→ whiskies), `location` |
 | `reviews` | `title`*, `description` (rich text), `whisky`* (→ whiskies), `rating`* (1 tot 5) |
 | `trips` | bestaat nog niet, zie [Trips-model](#trips-model) |
@@ -72,8 +72,7 @@ Hoe dat op de site terechtkomt:
 - **Vlaggen** komen uit een vaste lijst op Engelse landnaam (de tien landen die er nu in staan plus Taiwan, Sweden, Australia, Canada, England, Wales, Finland, Denmark, Switzerland, Italy, Austria, South Africa en New Zealand). Onbekend land: geen vlag.
 - **Samenvattingen** van proeverijen, landen, regio's en distilleries zijn een korte tekst (±140 tekens) uit de `description`, tenzij er een `summary` is.
 - **Omslagfoto van een proeverij**: `featuredImage`, anders de eerste afbeelding van `images`, anders een (per proeverij vaste) illustratie van een glas whisky.
-- **Whisky**: ABV, leeftijd of "NAS" (als `isNas` aan staat), vaten als chips en `notes` als proefnotities. Land en regio komen uit de whisky zelf én uit al zijn distilleries (zonder dubbelen).
-- **Blend**: een whisky met meer dan één distillery in `distilleries` is een blend (geen apart veld of type). `brand` is optioneel en staat op kaarten boven de naam; zonder brand staat daar de distillery, of "N distilleries" bij een blend. `distilleries` (Reference, many → distilleries), `distillery`, `country` en `region` zijn allemaal optioneel, maar een whisky zonder enige distillery wordt niet getoond. Het oude `distillery`-veld wordt nog steeds gelezen (samen met `distilleries`, zonder dubbelen) en kan weg zodra alle whisky's `distilleries` gebruiken.
+- **Whisky**: ABV, leeftijd of "NAS" (als `isNas` aan staat), vaten als chips en `notes` als proefnotities. Land en regio komen uit de whisky zelf én uit zijn distillery (zonder dubbelen). De distillery komt uit het veld `distillery`; een whisky zonder distillery wordt niet getoond. `brand` is optioneel en staat op kaarten boven de naam; zonder brand staat daar de distillery. De code kan al meerdere distilleries per whisky tonen (een blend), maar het veld `distilleries` wordt pas gelezen als dat in de mapper wordt aangezet.
 - **Distillery zonder regio** staat onder het land (`/countries/<land>`, filters en kaart).
 - **Reviews** verschijnen op de whisky-pagina met sterren en het gemiddelde; zonder reviews is het blok verborgen. Aankomende proeverijen tonen nooit hun whisky's.
 

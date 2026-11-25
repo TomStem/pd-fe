@@ -31,14 +31,21 @@ export function ratingBuckets({ averageRating }: Pick<WhiskyView, 'averageRating
   return RATING_BUCKETS.filter(({ value }) => (value === '4-plus' && averageRating >= 4) || (value === '3-plus' && averageRating >= 3));
 }
 
-export const whiskySearchText = (w: WhiskyView) => texts(w.name, w.distillery.name, w.region?.name, w.country?.name, ...w.casks);
+export const whiskySearchText = (w: WhiskyView) => texts(w.name, w.brand, ...w.distilleries.map(d => d.name), ...w.regions.map(r => r.name), ...w.countries.map(c => c.name), ...w.casks);
 
 const optional = <T>(value: T | undefined): T[] => (value === undefined ? [] : [value]);
 
+const TYPES: FacetValue[] = [
+  { value: 'single-distillery', label: 'Single distillery' },
+  { value: 'blend', label: 'Blend' },
+];
+
 export const whiskyFilterGroups: FilterGroup<WhiskyView>[] = [
-  { key: 'distillery', label: 'Distillery', values: w => [{ value: w.distillery.slug, label: w.distillery.name }] },
-  { key: 'country', label: 'Country', values: w => optional(w.country).map(c => ({ value: c.slug, label: c.name })) },
-  { key: 'region', label: 'Region', values: w => optional(w.region).map(r => ({ value: r.slug, label: r.name })) },
+  { key: 'type', label: 'Type', values: w => [bucket(TYPES, w.isBlend ? 'blend' : 'single-distillery')], compare: byFixedOrder(TYPES.map(t => t.value)) },
+  { key: 'brand', label: 'Brand', values: w => optional(w.brand).filter(b => facetValue(b)).map(b => ({ value: facetValue(b), label: b })) },
+  { key: 'distillery', label: 'Distillery', values: w => w.distilleries.map(d => ({ value: d.slug, label: d.name })) },
+  { key: 'country', label: 'Country', values: w => w.countries.map(c => ({ value: c.slug, label: c.name })) },
+  { key: 'region', label: 'Region', values: w => w.regions.map(r => ({ value: r.slug, label: r.name })) },
   { key: 'age', label: 'Age', values: w => optional(ageBucket(w)), compare: byFixedOrder(AGE_BUCKETS.map(b => b.value)) },
   { key: 'cask', label: 'Cask', values: w => w.casks.filter(c => facetValue(c)).map(c => ({ value: facetValue(c), label: c })) },
   { key: 'rating', label: 'Rating', values: w => ratingBuckets(w), compare: byFixedOrder(RATING_BUCKETS.map(b => b.value)) },

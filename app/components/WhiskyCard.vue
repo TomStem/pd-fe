@@ -7,14 +7,15 @@ defineProps<{ whisky: WhiskyView }>();
     <CoverImage
       :src="whisky.image"
       :alt="whisky.name"
-      :slugs="[whisky.region?.slug, whisky.country?.slug]"
+      :slugs="[whisky.regions[0]?.slug, whisky.countries[0]?.slug]"
+      :tags="[whisky.isBlend ? 'Blend' : undefined]"
       height-class="aspect-[8/3]"
       :image-width="1200"
       :image-height="450"
     />
     <div class="flex flex-1 flex-col p-4">
       <p class="label-mono text-sherry">
-        {{ whisky.distillery.name }}
+        {{ whiskyLabel(whisky) }}
       </p>
       <h3 class="mt-1 text-lg font-bold">
         <NuxtLink

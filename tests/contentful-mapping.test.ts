@@ -149,9 +149,23 @@ describe('mapStore', () => {
 
   it('resolves links by entry id and ignores unresolvable ones', () => {
     expect(store.regions[0]!.countrySlug).toBe('scotland');
-    expect(store.whiskies[0]).toMatchObject({ distillerySlug: 'fake-distillery', countrySlug: 'scotland', regionSlug: undefined });
+    expect(store.whiskies[0]).toMatchObject({ distillerySlugs: ['fake-distillery'], countrySlug: 'scotland', regionSlug: undefined });
     expect(store.tastings[0]!.whiskySlugs).toEqual(['fake-10-years']);
     expect(store.reviews.map(r => [r.title, r.whiskySlug])).toEqual([['Mooi', 'fake-10-years'], ['Goed', 'fake-10-years']]);
+  });
+
+  it('merges the distilleries and the legacy distillery of a whisky into one list without duplicates or unresolved links', () => {
+    const whiskies = (fields: Record<string, unknown>) => mapStore({ ...raw, whiskies: [entry('w9', { name: 'Mix', ...fields })] }).whiskies[0]!;
+    expect(whiskies({ distillery: link('d1') }).distillerySlugs).toEqual(['fake-distillery']);
+    expect(whiskies({ distilleries: [link('d2'), link('d1')] }).distillerySlugs).toEqual(['regionless', 'fake-distillery']);
+    expect(whiskies({ distilleries: [link('d2'), link('d1')], distillery: link('d1') }).distillerySlugs).toEqual(['regionless', 'fake-distillery']);
+    expect(whiskies({ distilleries: [link('d2')], distillery: link('d1') }).distillerySlugs).toEqual(['regionless', 'fake-distillery']);
+    expect(whiskies({ distilleries: [link('gone'), link('d1')], distillery: link('gone') }).distillerySlugs).toEqual(['fake-distillery']);
+    expect(whiskies({}).distillerySlugs).toEqual([]);
+  });
+
+  it('maps the brand and ignores a blank one', () => {
+    expect(mapStore({ ...raw, whiskies: [entry('w9', { name: 'B', brand: ' Foggy Quay ' }), entry('w8', { name: 'C', brand: ' ' })] }).whiskies.map(w => w.brand)).toEqual(['Foggy Quay', undefined]);
   });
 
   it('maps whisky facts', () => {
@@ -212,10 +226,16 @@ describe('queries on mapped content', () => {
     expect(unrated.reviews).toEqual([]);
   });
 
-  it('falls back to the distillery for whisky region and country', () => {
+  it('adds the region and country of the distillery to those of the whisky', () => {
     const whisky = getWhiskyDetail(store, 'fake-nas', now)!.whisky;
-    expect(whisky.region?.slug).toBe('islay');
-    expect(whisky.country?.slug).toBe('scotland');
+    expect(whisky.regions.map(r => r.slug)).toEqual(['islay']);
+    expect(whisky.countries.map(c => c.slug)).toEqual(['scotland']);
+  });
+
+  it('shows a whisky of distilleries from several countries in each of them', () => {
+    const blend = mapStore({ ...raw, whiskies: [entry('w9', { name: 'Mix', distilleries: [link('d1'), link('d2')] })] });
+    expect(getWhiskyDetail(blend, 'mix', now)!.whisky.countries.map(c => c.slug)).toEqual(['scotland', 'united-states']);
+    expect(getHome(blend, now).countries.map(c => c.slug)).toEqual(['scotland', 'united-states']);
   });
 
   it('keeps distilleries without region under their country', () => {

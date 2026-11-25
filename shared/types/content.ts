@@ -56,7 +56,9 @@ export interface Distillery extends Seo {
 export interface Whisky extends Seo {
   slug: string;
   name: string;
-  distillerySlug: string;
+  /** A blend has more than one; a whisky without any resolvable distillery cannot be shown. */
+  distillerySlugs: string[];
+  brand?: string;
   age?: number;
   /** No age statement; shown instead of an age. */
   isNas: boolean;
@@ -64,7 +66,7 @@ export interface Whisky extends Seo {
   casks: string[];
   /** HTML, empty when the whisky has no notes. */
   notes: string;
-  /** Falls back to the country and region of the distillery when missing. */
+  /** Own country and region; those of the distilleries are added when shown. */
   countrySlug?: string;
   regionSlug?: string;
   image?: string;

@@ -1,6 +1,6 @@
 import type { ContentStore, Country, Distillery, Region, Tasting, Trip, Whisky } from '#shared/types/content';
 import type {
-  CountryDetail, CountryRef, CountryView, DistilleryDetail, DistilleryView, HomeData, RegionDetail, RegionRef,
+  CountryDetail, CountryRef, CountryView, DistilleryDetail, DistilleryRef, DistilleryView, HomeData, RegionDetail, RegionRef,
   RegionView, TastingView, TripView, WhiskyDetail, WhiskyView,
 } from '#shared/types/views';
 import { isUpcoming } from '../../../shared/utils/events';
@@ -8,6 +8,7 @@ import { isUpcoming } from '../../../shared/utils/events';
 const isDefined = <T>(value: T | undefined): value is T => value !== undefined;
 const collator = new Intl.Collator('en', { sensitivity: 'base' });
 const byName = <T extends { name: string }>(items: T[]) => [...items].sort((a, b) => collator.compare(a.name, b.name));
+const uniqueBySlug = <T extends { slug: string }>(items: (T | undefined)[]) => [...new Map(items.filter(isDefined).map(item => [item.slug, item])).values()];
 const bySlug = <T extends { slug: string }>(items: T[]) => new Map(items.map(item => [item.slug, item]));
 
 /** Resolves references and reverse lookups over an in-memory content store. */
@@ -48,20 +49,24 @@ function createLookup(store: ContentStore, now: Date) {
 
   const distilleryView = (distillery: Distillery): DistilleryView | undefined => {
     const { country, region } = placeOf(distillery);
-    return country && { ...distillery, country, region, whiskyCount: store.whiskies.filter(w => w.distillerySlug === distillery.slug).length };
+    return country && { ...distillery, country, region, whiskyCount: store.whiskies.filter(w => w.distillerySlugs.includes(distillery.slug)).length };
   };
 
   const whiskyView = (whisky: Whisky): WhiskyView | undefined => {
-    const distillery = distilleries.get(whisky.distillerySlug);
-    if (!distillery) return undefined;
+    const refs = whisky.distillerySlugs.map(slug => distilleries.get(slug)).filter(isDefined).map((distillery): DistilleryRef => ({
+      slug: distillery.slug,
+      name: distillery.name,
+      ...placeOf(distillery),
+    }));
+    if (!refs.length) return undefined;
     const own = placeOf(whisky);
-    const inherited = placeOf(distillery);
     const ratings = store.reviews.filter(r => r.whiskySlug === whisky.slug).map(r => r.rating);
     return {
       ...whisky,
-      distillery: { slug: distillery.slug, name: distillery.name },
-      country: own.country ?? inherited.country,
-      region: own.region ?? inherited.region,
+      distilleries: refs,
+      isBlend: refs.length > 1,
+      countries: uniqueBySlug([own.country, ...refs.map(r => r.country)]),
+      regions: uniqueBySlug([own.region, ...refs.map(r => r.region)]),
       reviewCount: ratings.length,
       averageRating: ratings.length ? Math.round(ratings.reduce((sum, r) => sum + r, 0) / ratings.length * 10) / 10 : undefined,
     };
@@ -98,7 +103,7 @@ export function getHome(store: ContentStore, now = new Date()): HomeData {
   const withContent = new Set([
     ...store.regions.map(r => r.countrySlug),
     ...store.distilleries.map(d => lookup.distilleryView(d)?.country.slug),
-    ...store.whiskies.map(w => lookup.whiskyView(w)?.country?.slug),
+    ...store.whiskies.flatMap(w => lookup.whiskyView(w)?.countries.map(c => c.slug) ?? []),
     ...tastings.flatMap(t => [...t.countries.map(c => c.slug), ...t.regions.map(r => r.country.slug)]),
   ]);
   const nextTasting = tastings.filter(t => t.isUpcoming).at(-1);
@@ -164,7 +169,7 @@ export function getDistilleryDetail(store: ContentStore, slug: string, now = new
   const distillery = lookup.distilleries.get(slug);
   const view = distillery && lookup.distilleryView(distillery);
   if (!view) return undefined;
-  const whiskies = store.whiskies.filter(w => w.distillerySlug === slug);
+  const whiskies = store.whiskies.filter(w => w.distillerySlugs.includes(slug));
   const whiskySlugs = new Set(whiskies.map(w => w.slug));
   return {
     distillery: view,
@@ -178,6 +183,15 @@ export function getWhiskies(store: ContentStore): WhiskyView[] {
   return store.whiskies.map(createLookup(store, new Date()).whiskyView).filter(isDefined);
 }
 
+const sameBrand = (a?: string, b?: string) => a !== undefined && b !== undefined && a.toLowerCase() === b.toLowerCase();
+
+/** Other whiskies of the same brand; without those, the ones that share a distillery. */
+function siblingsOf(store: ContentStore, whisky: Whisky): Whisky[] {
+  const others = store.whiskies.filter(w => w.slug !== whisky.slug);
+  const ofBrand = others.filter(w => sameBrand(w.brand, whisky.brand));
+  return ofBrand.length ? ofBrand : others.filter(w => w.distillerySlugs.some(slug => whisky.distillerySlugs.includes(slug)));
+}
+
 export function getWhiskyDetail(store: ContentStore, slug: string, now = new Date()): WhiskyDetail | undefined {
   const lookup = createLookup(store, now);
   const whisky = lookup.whiskies.get(slug);
@@ -186,7 +200,7 @@ export function getWhiskyDetail(store: ContentStore, slug: string, now = new Dat
   return {
     whisky: view,
     reviews: store.reviews.filter(r => r.whiskySlug === slug),
-    siblings: store.whiskies.filter(w => w.distillerySlug === whisky.distillerySlug && w.slug !== slug).slice(0, 3).map(lookup.whiskyView).filter(isDefined),
+    siblings: siblingsOf(store, whisky).map(lookup.whiskyView).filter(isDefined).slice(0, 3),
     tastings: lookup.tastings().filter(t => t.whiskySlugs.includes(slug)),
   };
 }

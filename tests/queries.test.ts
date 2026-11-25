@@ -45,23 +45,23 @@ describe('queries', () => {
   });
 
   it('counts what exists for the home stats', () => {
-    expect(getHome(store, now).stats).toEqual({ tastings: 5, countries: 4, whiskies: 14, distilleries: 17, trips: 3 });
+    expect(getHome(store, now).stats).toEqual({ tastings: 5, countries: 4, whiskies: 16, distilleries: 17, trips: 3 });
   });
 
   it('leaves out countries without content and entities that cannot be shown from the stats', () => {
     const sparse: ContentStore = {
       ...store,
       countries: [...store.countries, { ...store.countries[0]!, slug: 'empty-land', name: 'Empty land' }],
-      whiskies: [...store.whiskies, { ...store.whiskies[0]!, slug: 'dangling', distillerySlug: 'nowhere' }],
+      whiskies: [...store.whiskies, { ...store.whiskies[0]!, slug: 'dangling', distillerySlugs: ['nowhere'] }],
       trips: [],
     };
-    expect(getHome(sparse, now).stats).toMatchObject({ countries: 4, whiskies: 14, trips: 0 });
+    expect(getHome(sparse, now).stats).toMatchObject({ countries: 4, whiskies: 16, trips: 0 });
   });
 
   it('resolves whiskies, distillery and region of a past tasting', () => {
     const speyside = getTastings(store, now).find(t => t.slug === 'speyside-sherrybommen')!;
     expect(speyside.whiskies.map(w => w.name)).toContain('Glenfarclas 15');
-    expect(speyside.whiskies[0]!.country?.slug).toBe('schotland');
+    expect(speyside.whiskies[0]!.countries.map(c => c.slug)).toEqual(['schotland']);
     expect(speyside.regions.map(r => r.slug)).toEqual(['speyside']);
     expect(speyside.countries.map(c => c.slug)).toEqual(['schotland']);
   });
@@ -128,7 +128,7 @@ describe('queries', () => {
 
   it('finds all tastings that pour a whisky of a distillery', () => {
     const detail = getDistilleryDetail(store, 'laphroaig', now)!;
-    expect(detail.whiskies.map(w => w.slug)).toEqual(['laphroaig-10']);
+    expect(detail.whiskies.map(w => w.slug)).toEqual(['laphroaig-10', 'harbour-lights-no-3']);
     expect(detail.tastings.map(t => t.slug).sort()).toEqual(['raad-de-dram', 'turf-of-geen-turf']);
     expect(detail.trips.map(t => t.slug)).toEqual(['islay-pelgrimage']);
   });
@@ -151,7 +151,7 @@ describe('queries', () => {
   it('lists tastings and siblings for a whisky', () => {
     const detail = getWhiskyDetail(store, 'ardbeg-10', now)!;
     expect(detail.tastings.map(t => t.slug)).toEqual(['turf-of-geen-turf']);
-    expect(detail.siblings).toEqual([]);
+    expect(detail.siblings.map(w => w.slug)).toEqual(['foggy-quay-smoke-and-sherry']);
     expect(getWhiskyDetail(store, 'nope', now)).toBeUndefined();
   });
 
@@ -159,7 +159,7 @@ describe('queries', () => {
     const ardbeg = store.whiskies.find(w => w.slug === 'ardbeg-10')!;
     const more = ['a', 'b', 'c', 'd'].map(slug => ({ ...ardbeg, slug: `ardbeg-${slug}`, name: `Ardbeg ${slug}` }));
     const crowded: ContentStore = { ...store, whiskies: [...store.whiskies, ...more] };
-    expect(getWhiskyDetail(crowded, 'ardbeg-10', now)!.siblings.map(w => w.slug)).toEqual(['ardbeg-a', 'ardbeg-b', 'ardbeg-c']);
+    expect(getWhiskyDetail(crowded, 'ardbeg-10', now)!.siblings.map(w => w.slug)).toEqual(['foggy-quay-smoke-and-sherry', 'ardbeg-a', 'ardbeg-b']);
     const pouredTwice: ContentStore = { ...store, tastings: store.tastings.map(t => ({ ...t, whiskySlugs: ['ardbeg-10'] })) };
     const dates = getWhiskyDetail(pouredTwice, 'ardbeg-10', now)!.tastings.map(t => Date.parse(t.date));
     expect(dates.length).toBeGreaterThan(1);
@@ -174,6 +174,54 @@ describe('queries', () => {
   it('skips entities with dangling references instead of failing', () => {
     const broken: ContentStore = { ...store, distilleries: [{ ...store.distilleries[0]!, regionSlug: 'nowhere' }] };
     expect(getTrips(broken)[0]!.distilleries).toEqual([]);
+  });
+});
+
+describe('blends', () => {
+  const view = (slug: string) => getWhiskyDetail(store, slug, now)!;
+
+  it('treats a whisky with more than one distillery as a blend', () => {
+    expect(view('foggy-quay-smoke-and-sherry').whisky).toMatchObject({ isBlend: true, brand: 'Foggy Quay' });
+    expect(view('foggy-quay-smoke-and-sherry').whisky.distilleries.map(d => d.slug)).toEqual(['ardbeg', 'glenfarclas', 'springbank']);
+    expect(view('harbour-lights-no-3').whisky.brand).toBeUndefined();
+    expect(view('ardbeg-10').whisky).toMatchObject({ isBlend: false });
+    expect(view('ardbeg-10').whisky.distilleries.map(d => d.slug)).toEqual(['ardbeg']);
+  });
+
+  it('derives countries and regions from all distilleries, without duplicates', () => {
+    const blend = view('foggy-quay-smoke-and-sherry').whisky;
+    expect(blend.countries.map(c => c.slug)).toEqual(['schotland']);
+    expect(blend.regions.map(r => r.slug)).toEqual(['islay', 'speyside', 'campbeltown']);
+    expect(view('ardbeg-10').whisky.regions.map(r => r.slug)).toEqual(['islay']);
+  });
+
+  it('adds the own country and region of a whisky in front of those of its distilleries', () => {
+    const own: ContentStore = { ...store, whiskies: store.whiskies.map(w => (w.slug === 'ardbeg-10' ? { ...w, regionSlug: 'speyside' } : w)) };
+    expect(getWhiskyDetail(own, 'ardbeg-10', now)!.whisky.regions.map(r => r.slug)).toEqual(['speyside', 'islay']);
+  });
+
+  it('lists blends with every distillery they contain', () => {
+    expect(getDistilleryDetail(store, 'caol-ila', now)!.whiskies.map(w => [w.slug, w.isBlend])).toEqual([['caol-ila-12', false], ['harbour-lights-no-3', true]]);
+    expect(getDistilleryDetail(store, 'ardbeg', now)!.distillery.whiskyCount).toBe(2);
+  });
+
+  it('shows other whiskies of the same brand first, otherwise those that share a distillery', () => {
+    const sibling = { ...store.whiskies.find(w => w.slug === 'harbour-lights-no-3')!, slug: 'foggy-quay-2', brand: 'foggy QUAY' };
+    const branded: ContentStore = { ...store, whiskies: [...store.whiskies, sibling] };
+    expect(getWhiskyDetail(branded, 'foggy-quay-smoke-and-sherry', now)!.siblings.map(w => w.slug)).toEqual(['foggy-quay-2']);
+    expect(getWhiskyDetail(store, 'foggy-quay-smoke-and-sherry', now)!.siblings.map(w => w.slug)).toEqual(['ardbeg-10', 'glenfarclas-15', 'springbank-10']);
+    expect(getWhiskyDetail(store, 'harbour-lights-no-3', now)!.siblings.map(w => w.slug)).toEqual(['lagavulin-16', 'laphroaig-10', 'caol-ila-12']);
+    expect(getWhiskyDetail(store, 'yamazaki-12', now)!.siblings).toEqual([]);
+  });
+
+  it('skips distilleries that do not exist and whiskies without any', () => {
+    const [ardbeg, foggy] = [store.whiskies[0]!, store.whiskies.find(w => w.slug === 'foggy-quay-smoke-and-sherry')!];
+    const broken: ContentStore = {
+      ...store,
+      whiskies: [{ ...foggy, distillerySlugs: ['ardbeg', 'nowhere'] }, { ...ardbeg, slug: 'orphan', distillerySlugs: [] }],
+    };
+    expect(getWhiskyDetail(broken, foggy.slug, now)!.whisky).toMatchObject({ isBlend: false, distilleries: [{ slug: 'ardbeg' }] });
+    expect(getWhiskyDetail(broken, 'orphan', now)).toBeUndefined();
   });
 });
 
@@ -193,7 +241,7 @@ describe('home countries', () => {
       { slug: 'r-tasting', name: 'R2', countrySlug: 'tasting-only', intro: '', flavourProfile: [] },
     ],
     distilleries: [{ slug: 'd', name: 'D', countrySlug: 'whisky-only', story: '' }],
-    whiskies: [{ slug: 'w', name: 'W', distillerySlug: 'd', isNas: true, casks: [], notes: '' }],
+    whiskies: [{ slug: 'w', name: 'W', distillerySlugs: ['d'], isNas: true, casks: [], notes: '' }],
     reviews: [],
     tastings: [
       { slug: 't1', title: 'T1', date: '2020-01-01T20:00:00+01:00', whiskySlugs: [], countrySlugs: [], regionSlugs: ['r-tasting'], description: '', photos: [] },

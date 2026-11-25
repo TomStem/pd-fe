@@ -26,10 +26,21 @@ export interface DistilleryView extends Distillery {
   whiskyCount: number;
 }
 
-export interface WhiskyView extends Whisky {
-  distillery: Pick<Distillery, 'slug' | 'name'>;
+export interface DistilleryRef {
+  slug: string;
+  name: string;
   country?: CountryRef;
   region?: RegionRef;
+}
+
+export interface WhiskyView extends Whisky {
+  distilleries: DistilleryRef[];
+  /** More than one distillery. */
+  isBlend: boolean;
+  /** Own country and those of the distilleries, without duplicates. */
+  countries: CountryRef[];
+  /** Own region and those of the distilleries, without duplicates. */
+  regions: RegionRef[];
   reviewCount: number;
   /** Rounded to one decimal; absent without reviews. */
   averageRating?: number;

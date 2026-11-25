@@ -2,7 +2,9 @@
   {
     "slug": "ardbeg-10",
     "name": "Ardbeg 10",
-    "distillerySlug": "ardbeg",
+    "distillerySlugs": [
+      "ardbeg"
+    ],
     "age": 10,
     "isNas": false,
     "abv": 46,
@@ -14,7 +16,9 @@
   {
     "slug": "lagavulin-16",
     "name": "Lagavulin 16",
-    "distillerySlug": "lagavulin",
+    "distillerySlugs": [
+      "lagavulin"
+    ],
     "age": 16,
     "isNas": false,
     "abv": 43,
@@ -27,7 +31,9 @@
   {
     "slug": "laphroaig-10",
     "name": "Laphroaig 10",
-    "distillerySlug": "laphroaig",
+    "distillerySlugs": [
+      "laphroaig"
+    ],
     "age": 10,
     "isNas": false,
     "abv": 40,
@@ -39,7 +45,9 @@
   {
     "slug": "caol-ila-12",
     "name": "Caol Ila 12",
-    "distillerySlug": "caol-ila",
+    "distillerySlugs": [
+      "caol-ila"
+    ],
     "age": 12,
     "isNas": false,
     "abv": 43,
@@ -51,7 +59,9 @@
   {
     "slug": "bunnahabhain-12",
     "name": "Bunnahabhain 12",
-    "distillerySlug": "bunnahabhain",
+    "distillerySlugs": [
+      "bunnahabhain"
+    ],
     "age": 12,
     "isNas": false,
     "abv": 46.3,
@@ -64,7 +74,9 @@
   {
     "slug": "glenfiddich-12",
     "name": "Glenfiddich 12",
-    "distillerySlug": "glenfiddich",
+    "distillerySlugs": [
+      "glenfiddich"
+    ],
     "age": 12,
     "isNas": false,
     "abv": 40,
@@ -77,7 +89,9 @@
   {
     "slug": "glenfarclas-15",
     "name": "Glenfarclas 15",
-    "distillerySlug": "glenfarclas",
+    "distillerySlugs": [
+      "glenfarclas"
+    ],
     "age": 15,
     "isNas": false,
     "abv": 46,
@@ -89,7 +103,9 @@
   {
     "slug": "macallan-12-sherry-oak",
     "name": "The Macallan 12 Sherry Oak",
-    "distillerySlug": "the-macallan",
+    "distillerySlugs": [
+      "the-macallan"
+    ],
     "age": 12,
     "isNas": false,
     "abv": 40,
@@ -101,7 +117,9 @@
   {
     "slug": "springbank-10",
     "name": "Springbank 10",
-    "distillerySlug": "springbank",
+    "distillerySlugs": [
+      "springbank"
+    ],
     "age": 10,
     "isNas": false,
     "abv": 46,
@@ -114,7 +132,9 @@
   {
     "slug": "bushmills-10",
     "name": "Bushmills 10",
-    "distillerySlug": "bushmills",
+    "distillerySlugs": [
+      "bushmills"
+    ],
     "age": 10,
     "isNas": false,
     "abv": 40,
@@ -127,7 +147,9 @@
   {
     "slug": "redbreast-12",
     "name": "Redbreast 12",
-    "distillerySlug": "midleton",
+    "distillerySlugs": [
+      "midleton"
+    ],
     "age": 12,
     "isNas": false,
     "abv": 40,
@@ -140,7 +162,9 @@
   {
     "slug": "yamazaki-12",
     "name": "Yamazaki 12",
-    "distillerySlug": "yamazaki",
+    "distillerySlugs": [
+      "yamazaki"
+    ],
     "age": 12,
     "isNas": false,
     "abv": 43,
@@ -152,7 +176,9 @@
   {
     "slug": "chichibu-first-ten",
     "name": "Chichibu The First Ten",
-    "distillerySlug": "chichibu",
+    "distillerySlugs": [
+      "chichibu"
+    ],
     "age": 10,
     "isNas": false,
     "abv": 50.5,
@@ -164,12 +190,48 @@
   {
     "slug": "buffalo-trace-bourbon",
     "name": "Buffalo Trace Kentucky Straight Bourbon",
-    "distillerySlug": "buffalo-trace",
+    "distillerySlugs": [
+      "buffalo-trace"
+    ],
     "isNas": true,
     "abv": 40,
     "casks": [
       "Nieuw gebrand Amerikaans eiken"
     ],
     "notes": "Neus: Vanille, mint en een vleugje karamel.\n\nSmaak: Zoet en zacht, met toffee, bruine suiker en een beetje kruiden.\n\nAfdronk: Middellang, droog en licht kruidig."
+  },
+  {
+    "slug": "foggy-quay-smoke-and-sherry",
+    "name": "Smoke & Sherry No. 1",
+    "brand": "Foggy Quay",
+    "distillerySlugs": [
+      "ardbeg",
+      "glenfarclas",
+      "springbank"
+    ],
+    "age": 12,
+    "isNas": false,
+    "abv": 43,
+    "casks": [
+      "Sherry",
+      "Ex-bourbon"
+    ],
+    "notes": "Neus: Zachte rook, rozijnen en donkere chocolade.\n\nSmaak: Rond en gelaagd, met sinaasappelschil, kruiden en een rokerige ondertoon.\n\nAfdronk: Middellang, warm en licht zoutig."
+  },
+  {
+    "slug": "harbour-lights-no-3",
+    "name": "Harbour Lights No. 3",
+    "distillerySlugs": [
+      "lagavulin",
+      "caol-ila",
+      "bunnahabhain",
+      "laphroaig"
+    ],
+    "isNas": true,
+    "abv": 46,
+    "casks": [
+      "Ex-bourbon"
+    ],
+    "notes": "Neus: Turf, zeezout en gegrilde ananas.\n\nSmaak: Olieachtig en rokerig, met vanille en een vleugje noten.\n\nAfdronk: Lang en droog, met rook en peper."
   }
 ]

@@ -23,7 +23,7 @@ describe('fixture integrity', () => {
     expect(store.regions.filter(r => !countries.has(r.countrySlug))).toEqual([]);
     expect(store.distilleries.filter(d => d.regionSlug && !regions.has(d.regionSlug))).toEqual([]);
     expect(store.reviews.filter(r => !whiskies.has(r.whiskySlug))).toEqual([]);
-    expect(store.whiskies.filter(w => !distilleries.has(w.distillerySlug))).toEqual([]);
+    expect(store.whiskies.filter(w => !w.distillerySlugs.length || !w.distillerySlugs.every(s => distilleries.has(s)))).toEqual([]);
     for (const tasting of store.tastings) {
       expect(tasting.whiskySlugs.every(s => whiskies.has(s))).toBe(true);
       expect(tasting.countrySlugs.every(s => countries.has(s))).toBe(true);
@@ -33,6 +33,14 @@ describe('fixture integrity', () => {
       expect(trip.regionSlugs.every(s => regions.has(s))).toBe(true);
       expect(trip.distillerySlugs.every(s => distilleries.has(s))).toBe(true);
     }
+  });
+
+  it('has single-distillery whiskies and blends of two to four distilleries, with and without brand', () => {
+    const blends = store.whiskies.filter(w => w.distillerySlugs.length > 1);
+    expect(blends).toHaveLength(2);
+    expect(blends.every(w => w.distillerySlugs.length <= 4 && unique(w.distillerySlugs))).toBe(true);
+    expect(blends.map(w => w.brand !== undefined)).toEqual([true, false]);
+    expect(store.whiskies.filter(w => w.distillerySlugs.length === 1)).toHaveLength(14);
   });
 
   it('has valid coordinates and sequential itineraries', () => {
